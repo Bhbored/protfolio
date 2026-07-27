@@ -1,11 +1,8 @@
-import { personalInfo } from "../../../../data/mockData"
 import { Mail } from "lucide-react"
+import { useLanding } from "../../../providers/LandingProvider"
 
-interface FooterProps {
-  readonly onNavigate: (section: string) => void
-}
-
-export default function Footer({ onNavigate }: FooterProps) {
+export default function Footer() {
+  const { personalInfo, navigateToSection } = useLanding()
   const { Social, Email, HeadLine, Name } = personalInfo
 
   return (
@@ -31,7 +28,7 @@ export default function Footer({ onNavigate }: FooterProps) {
               {["Projects", "Skills", "Contact"].map((link) => (
                 <button
                   key={link}
-                  onClick={() => onNavigate(link)}
+                  onClick={() => navigateToSection(link)}
                   className="font-body text-sm text-on-surface-variant hover:text-primary transition-colors"
                 >
                   {link}

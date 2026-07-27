@@ -1,18 +1,14 @@
 import { useState, useEffect } from "react"
-import { personalInfo } from "../../../../data/mockData"
 import { useIsMobile } from "../../../../hooks/use-mobile"
 import { getInitials } from "../../../../lib/capitalizer"
+import { useLanding } from "../../../providers/LandingProvider"
 
 const navItems = ["Home", "Skills", "Projects", "Experience", "Certificates", "Education"]
 
-interface NavMenuProps {
-  readonly onNavigate: (section: string) => void
-  readonly currentSection: string
-}
-
-export default function NavMenu({ onNavigate, currentSection }: NavMenuProps) {
+export default function NavMenu() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const isMobile = useIsMobile()
+  const { personalInfo, currentSection, navigateToSection } = useLanding()
 
   useEffect(() => {
     if (!isMobile) setMobileOpen(false)
@@ -28,7 +24,7 @@ export default function NavMenu({ onNavigate, currentSection }: NavMenuProps) {
         {/* Logo */}
         <div className="relative group animate-fade-in-left delay-200">
           <button
-            onClick={() => onNavigate("Home")}
+            onClick={() => navigateToSection("Home")}
             className="w-10 h-10 border-2 border-primary-container flex items-center justify-center font-headline text-2xl font-bold text-primary-container leading-none hover:scale-110 transition-transform duration-300"
           >
             {initials}
@@ -40,7 +36,7 @@ export default function NavMenu({ onNavigate, currentSection }: NavMenuProps) {
           {navItems.map((item) => (
             <button
               key={item}
-              onClick={() => onNavigate(item)}
+              onClick={() => navigateToSection(item)}
               className={`transition-all duration-300 hover:scale-105 relative group ${
                 currentSection === item ? "text-primary-container" : "text-white/70 hover:text-primary-container"
               }`}
@@ -58,7 +54,7 @@ export default function NavMenu({ onNavigate, currentSection }: NavMenuProps) {
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-4">
           <button
-            onClick={() => onNavigate("Contact")}
+            onClick={() => navigateToSection("Contact")}
             className="rounded-full bg-linear-to-r from-primary-container to-secondary-container p-px hover:scale-105 active:scale-95 transition-all duration-300"
           >
             <div className="bg-background px-8 py-2.5 rounded-full font-headline text-sm font-bold tracking-widest uppercase text-white">
@@ -103,7 +99,7 @@ export default function NavMenu({ onNavigate, currentSection }: NavMenuProps) {
               <button
                 key={item}
                 onClick={() => {
-                  onNavigate(item)
+                  navigateToSection(item)
                   setMobileOpen(false)
                 }}
                 className={`font-body text-2xl tracking-widest uppercase transition-all duration-300 hover:scale-110 ${
@@ -115,7 +111,7 @@ export default function NavMenu({ onNavigate, currentSection }: NavMenuProps) {
             ))}
             <button
               onClick={() => {
-                onNavigate("Contact")
+                navigateToSection("Contact")
                 setMobileOpen(false)
               }}
               className="mt-8 px-12 py-4 rounded-full bg-linear-to-r from-primary-container to-secondary-container p-px hover:scale-105 active:scale-95 transition-all duration-300"
