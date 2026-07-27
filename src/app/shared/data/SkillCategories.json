@@ -1,0 +1,38 @@
+[
+  {
+    "id": "6078ae07-2b95-45bd-b398-45fd4ccbbf8f",
+    "category": "Languages & Frameworks"
+  },
+  {
+    "id": "b81925c1-9016-4f35-959c-253b419b4bf0",
+    "category": "Web Development"
+  },
+  {
+    "id": "5f27c407-7b32-4c39-a216-c1d079e7612d",
+    "category": "Mobile Development & Patterns"
+  },
+  {
+    "id": "858276a6-8c51-4565-9461-a4734ee67f79",
+    "category": "Data & Persistence"
+  },
+  {
+    "id": "607cee3b-43af-4826-8c4a-46a91e83a739",
+    "category": "Backend Services & Cloud"
+  },
+  {
+    "id": "432fbcfc-9ddd-4a75-989d-810fee2e0cfe",
+    "category": "Tools & Practices"
+  },
+  {
+    "id": "2068fd68-81e6-4e6c-9939-858e42473452",
+    "category": "AI-Assisted Development & Tooling"
+  },
+  {
+    "id": "4a2cd1e8-8855-446e-87ed-88655d615a9a",
+    "category": "Business & Accounting Knowledge"
+  },
+  {
+    "id": "8861bc58-c1c8-4198-9fe9-38aac7b3ea62",
+    "category": "Currently Exploring"
+  }
+]

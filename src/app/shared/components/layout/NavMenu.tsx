@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { personalInfo } from "../../../../data/mockData"
 import { useIsMobile } from "../../../../hooks/use-mobile"
+import { getInitials } from "../../../../lib/capitalizer"
 
 const navItems = ["Home", "Skills", "Projects", "Experience", "Certificates", "Education"]
 
@@ -17,7 +18,7 @@ export default function NavMenu({ onNavigate, currentSection }: NavMenuProps) {
     if (!isMobile) setMobileOpen(false)
   }, [isMobile])
 
-  const initials = personalInfo.Name.split(" ").map((n) => n[0]).join("")
+  const initials = getInitials(personalInfo.Name)
 
   return (
     <>

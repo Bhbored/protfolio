@@ -1,0 +1,7 @@
+export { ProficiencyLevel, ProjectCategory } from "./enums"
+export type { SocialLinks, Language, PersonalInfo } from "./personalInfo"
+export type { Project } from "./project"
+export type { Skill, SkillCategory } from "./skill"
+export type { Experience } from "./experience"
+export type { Education } from "./education"
+export type { Certificate } from "./certificate"
