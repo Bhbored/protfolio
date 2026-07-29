@@ -1,31 +1,34 @@
-import { useState } from "react"
-import { ArrowLeft, ArrowRight } from "lucide-react"
-import { useLanding } from "../../providers/LandingProvider"
-import { useIsMobile } from "../../../hooks/use-mobile"
-import CertificateCard from "./components/CertificateCard"
+import { useState } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useLanding } from "../../providers/LandingProvider";
+import { useIsMobile } from "../../../hooks/use-mobile";
+import CertificateCard from "./components/CertificateCard";
 
-const pageSize = 4
+const pageSize = 4;
 
 export default function CertificatesSection() {
-  const { certificates } = useLanding()
-  const isMobile = useIsMobile()
-  const [page, setPage] = useState(0)
+  const { certificates } = useLanding();
+  const isMobile = useIsMobile();
+  const [page, setPage] = useState(0);
 
-  const pages: typeof certificates[] = []
+  const pages: (typeof certificates)[] = [];
   for (let i = 0; i < certificates.length; i += isMobile ? 2 : pageSize) {
-    pages.push(certificates.slice(i, i + (isMobile ? 2 : pageSize)))
+    pages.push(certificates.slice(i, i + (isMobile ? 2 : pageSize)));
   }
 
-  const totalPages = pages.length
-  const next = () => setPage((p) => Math.min(p + 1, totalPages - 1))
-  const prev = () => setPage((p) => Math.max(p - 1, 0))
+  const totalPages = pages.length;
+  const next = () => setPage((p) => Math.min(p + 1, totalPages - 1));
+  const prev = () => setPage((p) => Math.max(p - 1, 0));
 
   return (
-    <section id="certificates" className="min-h-screen pt-16 md:pt-24 pb-20 md:pb-24 px-6 relative">
+    <section
+      id="certificates"
+      className="min-h-screen pt-16 md:pt-24 pb-20 md:pb-24 px-6 relative"
+    >
       {/* Background Mesh */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none opacity-20 -z-10 mesh-gradient">
         <div className="absolute top-1/4 right-1/4 w-64 md:w-96 h-64 md:h-96 bg-primary/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-1/4 left-1/4 w-80 md:w-[500px] h-80 md:h-[500px] bg-accent-orange/5 blur-[150px] rounded-full" />
+        <div className="absolute bottom-1/4 left-1/4 w-80 md:w-125 h-80 md:h-125 bg-accent-orange/5 blur-[150px] rounded-full" />
       </div>
 
       {/* Header */}
@@ -34,21 +37,35 @@ export default function CertificatesSection() {
           <div className="inline-block relative">
             <span
               className="absolute -top-4 md:-top-6 left-0 font-label text-[8px] md:text-[10px] tracking-[0.4em] text-primary/40 uppercase animate-fade-in-up"
-              style={{ animationDelay: "200ms", animationFillMode: "both", opacity: 0 }}
+              style={{
+                animationDelay: "200ms",
+                animationFillMode: "both",
+                opacity: 0,
+              }}
             >
               // VERIFIED_CREDENTIALS
             </span>
             <h1
               className="font-headline text-[48px] md:text-[80px] lg:text-[96px] font-black tracking-tighter uppercase leading-none animate-fade-in-left"
-              style={{ animationDelay: "400ms", animationFillMode: "both", opacity: 0 }}
+              style={{
+                animationDelay: "400ms",
+                animationFillMode: "both",
+                opacity: 0,
+              }}
             >
-              CERTIFIED<br /><span className="text-primary">COMPETENCE</span>
+              CERTIFIED
+              <br />
+              <span className="text-primary">COMPETENCE</span>
             </h1>
           </div>
           <div className="max-w-xs md:text-right border-r-2 md:border-r-0 md:border-l-2 border-primary/20 md:pl-6 pr-4 md:pr-0">
             <p
               className="text-slate-400 text-xs md:text-sm leading-relaxed animate-fade-in-up"
-              style={{ animationDelay: "600ms", animationFillMode: "both", opacity: 0 }}
+              style={{
+                animationDelay: "600ms",
+                animationFillMode: "both",
+                opacity: 0,
+              }}
             >
               Professional certifications and technical achievements.
             </p>
@@ -56,7 +73,11 @@ export default function CertificatesSection() {
         </div>
         <div
           className="mt-4 flex items-center gap-2 animate-fade-in-up"
-          style={{ animationDelay: "800ms", animationFillMode: "both", opacity: 0 }}
+          style={{
+            animationDelay: "800ms",
+            animationFillMode: "both",
+            opacity: 0,
+          }}
         >
           <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
           <span className="font-label text-[10px] tracking-[0.3em] uppercase text-slate-500">
@@ -70,20 +91,24 @@ export default function CertificatesSection() {
         <div className="overflow-hidden max-md:overflow-x-auto max-md:scrollbar-none">
           <div
             className="flex gap-12 transition-transform duration-500 ease-in-out"
-            style={!isMobile ? { transform: `translateX(-${page * 100}%)` } : undefined}
+            style={
+              !isMobile
+                ? { transform: `translateX(-${page * 100}%)` }
+                : undefined
+            }
           >
             {pages.map((pageCerts, pi) => (
               <div key={pi} className="flex gap-12 shrink-0 w-full">
                 {pageCerts.map((cert) => {
-                  const realIndex = certificates.indexOf(cert)
+                  const realIndex = certificates.indexOf(cert);
                   return (
                     <div
                       key={cert.Id}
-                      className="shrink-0 w-[calc(50vw-48px)] md:w-[calc(25vw-48px)] min-w-[240px] md:min-w-[280px] md:max-w-[360px]"
+                      className="shrink-0 w-[calc(50vw-48px)] md:w-[calc(25vw-48px)] min-w-60 md:min-w-70 md:max-w-90"
                     >
                       <CertificateCard certificate={cert} index={realIndex} />
                     </div>
-                  )
+                  );
                 })}
               </div>
             ))}
@@ -91,7 +116,7 @@ export default function CertificatesSection() {
         </div>
 
         {/* Nav */}
-        <div className="flex justify-between items-center mt-12 hidden md:flex">
+        <div className="flex justify-between items-center mt-12 md:flex">
           <button
             onClick={prev}
             disabled={page === 0}
@@ -114,5 +139,5 @@ export default function CertificatesSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
