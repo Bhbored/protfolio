@@ -5,7 +5,25 @@ import skillsData from "../shared/data/Skills.json"
 import categoriesData from "../shared/data/SkillCategories.json"
 import projectsData from "../shared/data/Projects.json"
 import certificatesData from "../shared/data/Certificates.json"
-import type { PersonalInfo, Skill, SkillCategory, Project, Certificate } from "../shared/types"
+import experiencesData from "../shared/data/Experiences.json"
+import educationsData from "../shared/data/Educations.json"
+import type { PersonalInfo, Skill, SkillCategory, Project, Certificate, Experience, Education } from "../shared/types"
+
+interface ExperienceJson {
+  title: string; company: string; period: string; description: string[]
+}
+
+interface EducationJson {
+  id: string; title: string; issuer: string; year: string
+}
+
+function toExperience(j: ExperienceJson): Experience {
+  return { Title: j.title, Company: j.company, Period: j.period, Description: j.description }
+}
+
+function toEducation(j: EducationJson): Education {
+  return { Id: j.id, Title: j.title, Issuer: j.issuer, Year: j.year }
+}
 
 // ── JSON data mappers ──
 
@@ -56,6 +74,8 @@ interface LandingState {
   getTop3SkillsByCertificateId: (id: string) => Skill[]
   projects: Project[]
   certificates: Certificate[]
+  experiences: Experience[]
+  educations: Education[]
 }
 
 const LandingContext = createContext<LandingState | null>(null)
@@ -72,6 +92,8 @@ export function LandingProvider({ children }: { readonly children: ReactNode }) 
   const skills = useMemo(() => (skillsData as SkillJson[]).map(toSkill), [])
   const categories = useMemo(() => (categoriesData as CategoryJson[]).map(toCategory), [])
   const projects = useMemo(() => (projectsData as ProjectJson[]).map(toProject), [])
+  const experiences = useMemo(() => (experiencesData as ExperienceJson[]).map(toExperience), [])
+  const educations = useMemo(() => (educationsData as EducationJson[]).map(toEducation), [])
 
   const getSkillsByCategoryId = useCallback(
     (categoryId: string) => skills.filter((s) => s.SkillCategoryID === categoryId),
@@ -113,6 +135,8 @@ export function LandingProvider({ children }: { readonly children: ReactNode }) 
         getTop3SkillsByCertificateId,
         projects,
         certificates,
+        experiences,
+        educations,
       }}
     >
       {children}

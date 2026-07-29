@@ -7,6 +7,9 @@ import HeroSection from "./app/features/landing/HeroSection"
 import SkillsSection from "./app/features/skills/SkillsSection"
 import ProjectsSection from "./app/features/projects/ProjectsSection"
 import CertificatesSection from "./app/features/certificates/CertificatesSection"
+import ExperienceSection from "./app/features/experience/ExperienceSection"
+import EducationSection from "./app/features/education/EducationSection"
+import ContactSection from "./app/features/contact/ContactSection"
 import ProjectDetailsPage from "./app/routes/ProjectDetailsPage"
 
 const queryClient = new QueryClient()
@@ -17,7 +20,10 @@ function HomePage() {
       <HeroSection />
       <SkillsSection />
       <ProjectsSection />
+      <ExperienceSection />
       <CertificatesSection />
+      <EducationSection />
+      <ContactSection />
     </div>
   )
 }
