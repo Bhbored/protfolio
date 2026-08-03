@@ -11,6 +11,7 @@ import ExperienceSection from "./app/features/experience/ExperienceSection"
 import EducationSection from "./app/features/education/EducationSection"
 import ContactSection from "./app/features/contact/ContactSection"
 import ProjectDetailsPage from "./app/routes/ProjectDetailsPage"
+import AdminRoutes from "./app/routes/AdminRoutes"
 
 const queryClient = new QueryClient()
 
@@ -45,8 +46,16 @@ export default function App() {
             <Route index element={<HomePage />} />
           </Route>
           <Route element={<EmptyLayout />}>
-            <Route path="project/:id" element={<LandingProvider><ProjectDetailsPage /></LandingProvider>} />
+            <Route
+              path="project/:id"
+              element={
+                <LandingProvider>
+                  <ProjectDetailsPage />
+                </LandingProvider>
+              }
+            />
           </Route>
+          <Route path="admin/*" element={<AdminRoutes />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>

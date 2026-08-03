@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { Lock } from "lucide-react"
 import { useIsMobile } from "../../../../hooks/use-mobile"
 import { getInitials } from "../../../../lib/capitalizer"
 import { useLanding } from "../../../providers/LandingProvider"
@@ -8,6 +10,7 @@ const navItems = ["Home", "Skills", "Projects", "Experience", "Certificates", "E
 export default function NavMenu() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const isMobile = useIsMobile()
+  const navigate = useNavigate()
   const { personalInfo, currentSection, navigateToSection } = useLanding()
 
   useEffect(() => {
@@ -53,6 +56,15 @@ export default function NavMenu() {
 
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => navigate("/admin/login")}
+            aria-label="Admin login"
+            title="Admin"
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/[0.05] border border-primary/15 text-zinc-400 hover:bg-primary/[0.12] hover:border-primary/40 hover:text-primary hover:shadow-[0_0_12px_rgba(0,240,255,0.2)] transition-all duration-300 cursor-pointer"
+          >
+            <Lock className="size-4" aria-hidden />
+          </button>
           <button
             onClick={() => navigateToSection("Contact")}
             className="rounded-full bg-linear-to-r from-primary-container to-secondary-container p-px hover:scale-105 active:scale-95 transition-all duration-300"
@@ -119,6 +131,16 @@ export default function NavMenu() {
               <div className="bg-background px-12 py-4 rounded-full font-headline text-sm font-bold tracking-widest uppercase text-white">
                 Let's Talk
               </div>
+            </button>
+            <button
+              onClick={() => {
+                setMobileOpen(false)
+                navigate("/admin/login")
+              }}
+              className="flex items-center gap-2 font-label text-xs tracking-widest uppercase text-on-surface-variant hover:text-primary transition-colors"
+            >
+              <Lock className="size-4" aria-hidden />
+              Admin
             </button>
           </div>
         </div>
