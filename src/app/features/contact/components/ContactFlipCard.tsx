@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Zap, Calendar, Code, ArrowRight, Mail } from "lucide-react";
-import { useLanding } from "../../../providers/LandingProvider";
+import { Zap, Calendar, Code, ArrowRight } from "lucide-react";
+import ContactForm from "./ContactForm";
 
 const perks = [
   {
@@ -21,7 +21,6 @@ const perks = [
 ];
 
 export default function ContactFlipCard() {
-  const { personalInfo: info } = useLanding();
   const [flipped, setFlipped] = useState(false);
 
   return (
@@ -92,14 +91,7 @@ export default function ContactFlipCard() {
           <h3 className="font-headline text-xl md:text-2xl font-bold uppercase tracking-tight text-white mb-6">
             Send Me A Message
           </h3>
-          <div className="space-y-6 grow flex flex-col">
-            <a
-              href={`mailto:${info.Email}?subject=Portfolio Contact&body=Hello, I would like to get in touch.`}
-              className="w-full h-14 bg-linear-to-r from-primary to-secondary flex items-center justify-center gap-3 font-headline font-bold text-background uppercase tracking-tight hover:scale-102 active:scale-95 transition-all duration-300 mt-auto"
-            >
-              SEND MESSAGE <Mail className="w-5 h-5" />
-            </a>
-          </div>
+          <ContactForm />
           <button
             type="button"
             onClick={() => setFlipped(false)}
