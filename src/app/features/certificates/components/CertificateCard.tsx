@@ -1,5 +1,6 @@
 import { BadgeCheck, ExternalLink } from "lucide-react"
 import type { Certificate } from "../../../shared/types"
+import { animStagger } from "../../../../lib/anim-delay"
 
 interface CertificateCardProps {
   readonly certificate: Certificate
@@ -7,51 +8,44 @@ interface CertificateCardProps {
 }
 
 export default function CertificateCard({ certificate, index }: CertificateCardProps) {
-  const shadowOpacity = index % 2 === 0 ? "0.3" : "0.1"
-
   return (
     <div
-      className="group relative bg-linear-to-br from-surface-container-low via-surface-container to-surface-container-high border-l-[3px] border-primary-container p-6 md:p-8 flex flex-col justify-between h-90 w-fit max-w-[420px] transition-all duration-500 hover:translate-x-2 hover:shadow-glow-cyan hover:border-l-4 animate-fade-in-up overflow-hidden"
-      style={{ animationDelay: `${index * 150}ms`, animationFillMode: "both", opacity: 0 }}
+      className={`group relative flex h-full min-h-80 w-full flex-col justify-between overflow-hidden border-l-[3px] border-primary-container bg-linear-to-br from-surface-container-low via-surface-container to-surface-container-high p-5 transition-all duration-500 hover:border-l-4 hover:shadow-glow-cyan motion-safe:hover:translate-x-1 animate-fade-in-up sm:p-6 md:min-h-90 md:p-8 ${animStagger(index)}`}
     >
-      {/* Gradient sweep */}
-      <div className="absolute inset-0 bg-linear-to-r from-transparent via-primary/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
-      {/* Top glow */}
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-linear-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      {/* Right edge glow */}
-      <div className="absolute top-0 bottom-0 right-0 w-[2px] bg-primary/0 group-hover:bg-primary/30 transition-colors duration-500" />
+      <div className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-primary/5 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/40 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+      <div className="absolute inset-y-0 right-0 w-0.5 bg-primary/0 transition-colors duration-500 group-hover:bg-primary/30" />
 
-      <div className="flex justify-between items-start mb-4 relative z-10">
-        <BadgeCheck className="text-primary-container text-3xl md:text-4xl transition-transform duration-300 group-hover:scale-110 group-hover:animate-pulse" />
-        <span className="font-label text-[12px] text-slate-600 tracking-widest">REF: {index + 1}</span>
+      <div className="relative z-10 mb-4 flex items-start justify-between">
+        <BadgeCheck className="text-3xl text-primary-container transition-transform duration-300 group-hover:scale-110 group-hover:animate-pulse md:text-4xl" />
+        <span className="font-label text-[12px] tracking-widest text-slate-600">REF: {index + 1}</span>
       </div>
 
-      <div className="space-y-1 mb-6 relative z-10">
-        <h3 className="font-headline text-lg md:text-xl font-bold uppercase tracking-tight text-white mb-1 group-hover:text-gradient transition-all duration-500">
+      <div className="relative z-10 mb-6 space-y-1">
+        <h3 className="mb-1 font-headline text-lg font-bold uppercase tracking-tight text-white transition-all duration-500 group-hover:text-gradient md:text-xl">
           {certificate.title}
         </h3>
-        <p className="font-body text-xs md:text-sm text-slate-400">
+        <p className="font-body text-xs text-slate-400 md:text-sm">
           {certificate.issuer} &bull; {certificate.year}
         </p>
       </div>
 
-      {/* Top 3 Skills */}
       {certificate.top_skills.length > 0 && (
-        <div className="space-y-3 mt-auto relative z-10">
+        <div className="relative z-10 mt-auto space-y-3">
           {certificate.top_skills.map((skill) => (
             <div key={skill.id}>
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-[12px] font-label tracking-widest text-slate-500 uppercase group-hover:text-slate-400 transition-colors duration-500">
+              <div className="mb-1 flex items-center justify-between">
+                <span className="font-label text-[12px] uppercase tracking-widest text-slate-500 transition-colors duration-500 group-hover:text-slate-400">
                   {skill.title}
                 </span>
-                <span className="text-[12px] font-label text-slate-400 group-hover:text-primary/80 transition-colors duration-500">
+                <span className="font-label text-[12px] text-slate-400 transition-colors duration-500 group-hover:text-primary/80">
                   {skill.mastery_level}%
                 </span>
               </div>
-              <div className="h-0.5 bg-surface-container-highest w-full relative overflow-hidden">
+              <div className="relative h-0.5 w-full overflow-hidden bg-surface-container-highest">
                 <div
-                  className="absolute h-full bg-primary"
-                  style={{ width: `${skill.mastery_level}%`, boxShadow: `0 0 8px rgba(0, 240, 255, ${shadowOpacity})` }}
+                  className="absolute h-full bg-primary shadow-glow-cyan"
+                  style={{ width: `${skill.mastery_level}%` }}
                 />
               </div>
             </div>
@@ -59,24 +53,22 @@ export default function CertificateCard({ certificate, index }: CertificateCardP
         </div>
       )}
 
-      {/* Dots */}
-      <div className="absolute bottom-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-        <span className="w-1 h-1 rounded-full bg-primary/60" />
-        <span className="w-1 h-1 rounded-full bg-primary/40" />
-        <span className="w-1 h-1 rounded-full bg-primary/20" />
+      <div className="absolute bottom-3 right-3 flex gap-1 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+        <span className="size-1 rounded-full bg-primary/60" />
+        <span className="size-1 rounded-full bg-primary/40" />
+        <span className="size-1 rounded-full bg-primary/20" />
       </div>
 
-      {/* Credential Link */}
       {certificate.link && (
-        <div className="mt-4 pt-3 border-t border-white/5 relative z-10">
+        <div className="relative z-10 mt-4 border-t border-white/5 pt-3">
           <a
             href={certificate.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-[10px] font-label text-primary/60 hover:text-primary transition-colors tracking-widest uppercase"
+            className="inline-flex items-center gap-1 font-label text-[10px] uppercase tracking-widest text-primary/60 transition-colors hover:text-primary"
           >
             <span>Verify Credential</span>
-            <ExternalLink className="w-3 h-3" />
+            <ExternalLink className="size-3" />
           </a>
         </div>
       )}

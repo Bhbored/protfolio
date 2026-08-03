@@ -24,7 +24,7 @@ export default function ProjectInfoCard({ category, repositoryUrl, technologyCou
       </div>
 
       <div className="relative flex flex-col gap-0">
-        {/* Category */}
+        
         <div className="py-4.5 border-b border-white/4 first:pt-0 last:pb-0 last:border-b-0">
           <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-orange-400 mb-1.5 drop-shadow-[0_0_16px_rgba(251,146,60,0.2)]">
             Category
@@ -34,7 +34,7 @@ export default function ProjectInfoCard({ category, repositoryUrl, technologyCou
           </p>
         </div>
 
-        {/* Repository */}
+        
         {repositoryUrl && (
           <div className="py-4.5 border-b border-white/4 first:pt-0 last:pb-0 last:border-b-0">
             <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-orange-400 mb-1.5 drop-shadow-[0_0_16px_rgba(251,146,60,0.2)]">
@@ -55,7 +55,7 @@ export default function ProjectInfoCard({ category, repositoryUrl, technologyCou
           </div>
         )}
 
-        {/* Tech Stack Count */}
+        
         <div className="py-4.5 border-b border-white/4 first:pt-0 last:pb-0 last:border-b-0">
           <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-orange-400 mb-1.5 drop-shadow-[0_0_16px_rgba(251,146,60,0.2)]">
             Tech Stack

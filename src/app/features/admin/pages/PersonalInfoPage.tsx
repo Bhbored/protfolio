@@ -1,12 +1,23 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Check, Plus, Trash2, Upload } from "lucide-react"
-import { createPersonalInfo, personalInfoKeys, updatePersonalInfo } from "../admin.service"
-import { EMPTY_PERSONAL_INFO, personalInfoQueries } from "../../landing/personal-info.service"
+import { Plus, Trash2 } from "lucide-react"
+import {
+  EMPTY_PERSONAL_INFO,
+  createPersonalInfo,
+  personalInfoKeys,
+  personalInfoQueries,
+  updatePersonalInfo,
+} from "../../landing/personal-info.service"
 import type { Language, PersonalInfo, ProficiencyLevel } from "../../../shared/types"
 import { ProficiencyLevel as Levels } from "../../../shared/types"
-import { useUploadImage } from "../../../../hooks/use-upload"
+import { useToast } from "../../../shared/components/Toast"
+import { ImageUploadField } from "../components/ImageUploadField"
+import {
+  PrimaryButton,
+  SelectField,
+  TextAreaField,
+  TextField,
+} from "../components/AdminForm"
 
 const proficiencyLabels: Record<ProficiencyLevel, string> = {
   [Levels.Elementary]: "Elementary",
@@ -17,12 +28,14 @@ const proficiencyLabels: Record<ProficiencyLevel, string> = {
 
 export default function PersonalInfoPage() {
   const queryClient = useQueryClient()
+  const toast = useToast()
   const { data } = useQuery(personalInfoQueries.detail())
   const [form, setForm] = useState<PersonalInfo>(EMPTY_PERSONAL_INFO)
-  const upload = useUploadImage()
 
   useEffect(() => {
-    if (data) setForm(data)
+    if (data) {
+      setForm(data)
+    }
   }, [data])
 
   const save = useMutation({
@@ -30,7 +43,16 @@ export default function PersonalInfoPage() {
       const { id, ...payload } = form
       return id ? updatePersonalInfo(id, payload) : createPersonalInfo(payload)
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: personalInfoKeys.all }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: personalInfoKeys.all })
+      toast.success({ title: "Personal information saved" })
+    },
+    onError: (error) => {
+      toast.error({
+        title: "Could not save personal information",
+        description: error instanceof Error ? error.message : "Unknown error",
+      })
+    },
   })
 
   const update = <K extends keyof PersonalInfo>(key: K, value: PersonalInfo[K]) =>
@@ -39,37 +61,82 @@ export default function PersonalInfoPage() {
     update("languages", form.languages.map((language, i) => i === index ? { ...language, ...patch } : language))
 
   return (
-    <form onSubmit={(event) => { event.preventDefault(); save.mutate() }} className="space-y-6">
+    <form
+      onSubmit={(event) => {
+        event.preventDefault()
+        save.mutate()
+      }}
+      className="space-y-6"
+    >
       <section className="rounded-xl border border-white/10 bg-surface-container-high p-6">
         <div className="mb-6 flex items-center justify-between gap-4">
-          <div><h1 className="font-headline text-2xl font-bold">Personal information</h1><p className="mt-1 text-sm text-on-surface-variant">Manage the details shown on your portfolio.</p></div>
-          <button disabled={save.isPending} className="inline-flex cursor-pointer items-center gap-2 rounded-md bg-linear-to-r from-primary to-secondary px-4 py-2 text-sm font-semibold text-on-primary disabled:opacity-50"><Check className="size-4" />{save.isPending ? "Saving…" : "Save"}</button>
+          <div>
+            <h1 className="font-headline text-2xl font-bold text-on-surface">Personal information</h1>
+            <p className="mt-1 text-sm text-on-surface-variant">
+              Manage the details shown on your portfolio.
+            </p>
+          </div>
+          <PrimaryButton type="submit" disabled={save.isPending}>
+            {save.isPending ? "Saving…" : "Save changes"}
+          </PrimaryButton>
         </div>
         <div className="grid gap-5 md:grid-cols-2">
-          {(["name", "title", "headline", "email", "phone", "location"] as const).map((field) => (
-            <label key={field} className="space-y-2 font-label text-xs uppercase tracking-widest text-on-surface-variant">{field.replaceAll("_", " ")}
-              <input type={field === "email" ? "email" : "text"} value={form[field]} onChange={(event) => update(field, event.target.value)} className="bg-transparent border-b border-outline-variant py-2 focus:border-primary focus:outline-none w-full text-on-surface" />
-            </label>
-          ))}
-          <label className="space-y-2 font-label text-xs uppercase tracking-widest text-on-surface-variant md:col-span-2">Summary
-            <textarea value={form.summary} onChange={(event) => update("summary", event.target.value)} rows={4} className="bg-transparent border-b border-outline-variant py-2 focus:border-primary focus:outline-none w-full text-on-surface" />
-          </label>
-          <div className="space-y-2"><label className="font-label text-xs uppercase tracking-widest text-on-surface-variant">Profile image</label>
-            <div className="flex gap-3"><input value={form.profile_image} onChange={(event) => update("profile_image", event.target.value)} className="bg-transparent border-b border-outline-variant py-2 focus:border-primary focus:outline-none w-full text-on-surface" />
-              <label className="inline-flex cursor-pointer items-center justify-center rounded-md bg-surface-container-high border border-outline-variant/30 px-3 text-primary"><Upload className="size-4" /><input type="file" accept="image/*" className="sr-only" onChange={(event) => { const file = event.target.files?.[0]; if (file) upload.mutate({ file, projectFolder: "profile" }, { onSuccess: (url) => update("profile_image", url) }) }} /></label>
-            </div>
-            {form.profile_image ? <img src={form.profile_image} alt="Profile preview" className="mt-3 size-20 rounded-full object-cover" /> : null}
+          <TextField label="Name" value={form.name} onChange={(value) => update("name", value)} required />
+          <TextField label="Title" value={form.title} onChange={(value) => update("title", value)} required />
+          <TextField label="Headline" value={form.headline} onChange={(value) => update("headline", value)} />
+          <TextField label="Email" type="email" value={form.email} onChange={(value) => update("email", value)} required />
+          <TextField label="Phone" value={form.phone} onChange={(value) => update("phone", value)} />
+          <TextField label="Location" value={form.location} onChange={(value) => update("location", value)} />
+          <div className="md:col-span-2">
+            <TextAreaField label="Summary" value={form.summary} onChange={(value) => update("summary", value)} />
           </div>
-          <label className="flex items-center gap-3 self-end text-sm text-on-surface"><input type="checkbox" checked={form.is_available_for_work} onChange={(event) => update("is_available_for_work", event.target.checked)} className="size-4 accent-primary" />Available for work</label>
+          <div className="md:col-span-2">
+            <ImageUploadField
+              label="Profile image"
+              value={form.profile_image}
+              onChange={(value) => update("profile_image", value)}
+              projectFolder="profile"
+              round
+            />
+          </div>
+          <label className="flex items-center gap-3 text-sm text-on-surface">
+            <input
+              type="checkbox"
+              checked={form.is_available_for_work}
+              onChange={(event) => update("is_available_for_work", event.target.checked)}
+              className="size-4 accent-primary"
+            />
+            Available for work
+          </label>
         </div>
       </section>
       <section className="rounded-xl border border-white/10 bg-surface-container-high p-6">
         <h2 className="font-headline text-lg font-bold">Social links</h2>
-        <div className="mt-5 grid gap-5 md:grid-cols-2">{(["github", "linkedin"] as const).map((field) => <label key={field} className="space-y-2 font-label text-xs uppercase tracking-widest text-on-surface-variant">{field}<input value={form.social[field]} onChange={(event) => update("social", { ...form.social, [field]: event.target.value })} className="bg-transparent border-b border-outline-variant py-2 focus:border-primary focus:outline-none w-full text-on-surface" /></label>)}</div>
+        <div className="mt-5 grid gap-5 md:grid-cols-2">
+          <TextField label="GitHub" value={form.social.github} onChange={(value) => update("social", { ...form.social, github: value })} />
+          <TextField label="LinkedIn" value={form.social.linkedin} onChange={(value) => update("social", { ...form.social, linkedin: value })} />
+        </div>
       </section>
       <section className="rounded-xl border border-white/10 bg-surface-container-high p-6">
-        <div className="flex items-center justify-between"><h2 className="font-headline text-lg font-bold">Languages</h2><button type="button" onClick={() => update("languages", [...form.languages, { name: "", proficiency: Levels.Elementary }])} className="inline-flex cursor-pointer items-center gap-2 rounded-md bg-surface-container-high border border-outline-variant/30 px-3 py-2 text-xs text-primary"><Plus className="size-4" />Add language</button></div>
-        <div className="mt-4 space-y-3">{form.languages.map((language, index) => <div key={`${language.name}-${index}`} className="grid gap-3 sm:grid-cols-[1fr_180px_auto]"><input value={language.name} onChange={(event) => updateLanguage(index, { name: event.target.value })} placeholder="Language" className="bg-transparent border-b border-outline-variant py-2 focus:border-primary focus:outline-none w-full text-on-surface" /><select value={language.proficiency} onChange={(event) => updateLanguage(index, { proficiency: Number(event.target.value) as ProficiencyLevel })} className="bg-transparent border-b border-outline-variant py-2 focus:border-primary focus:outline-none w-full text-on-surface">{Object.entries(proficiencyLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select><button type="button" aria-label={`Remove ${language.name || "language"}`} onClick={() => update("languages", form.languages.filter((_, i) => i !== index))} className="size-10 cursor-pointer text-error"><Trash2 className="mx-auto size-4" /></button></div>)}</div>
+        <div className="flex items-center justify-between">
+          <h2 className="font-headline text-lg font-bold">Languages</h2>
+          <button type="button" onClick={() => update("languages", [...form.languages, { name: "", proficiency: Levels.Elementary }])} className="inline-flex cursor-pointer items-center gap-2 text-sm text-primary">
+            <Plus className="size-4" /> Add language
+          </button>
+        </div>
+        <div className="mt-4 space-y-4">
+          {form.languages.map((language, index) => (
+            <div key={`${language.name}-${index}`} className="grid gap-3 sm:grid-cols-[1fr_180px_auto]">
+              <TextField label="Language" value={language.name} onChange={(value) => updateLanguage(index, { name: value })} />
+              <SelectField label="Proficiency" value={language.proficiency} onChange={(value) => updateLanguage(index, { proficiency: Number(value) as ProficiencyLevel })}>
+                {Object.entries(proficiencyLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+              </SelectField>
+              <button type="button" aria-label={`Remove ${language.name || "language"}`} onClick={() => update("languages", form.languages.filter((_, i) => i !== index))} className="mt-6 inline-flex size-11 cursor-pointer items-center justify-center text-secondary">
+                <Trash2 className="size-4" />
+              </button>
+            </div>
+          ))}
+        </div>
       </section>
     </form>
   )

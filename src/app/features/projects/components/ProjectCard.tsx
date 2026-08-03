@@ -1,52 +1,55 @@
-import { useNavigate } from "react-router-dom";
-import type { Project } from "../../../shared/types";
-import { Code, ExternalLink } from "lucide-react";
+import { useNavigate } from "react-router-dom"
+import type { Project } from "../../../shared/types"
+import { Code, ExternalLink } from "lucide-react"
+import { projectSlug, resolveMediaUrl } from "../../../../lib/media-url"
+import { animStagger } from "../../../../lib/anim-delay"
 
 interface ProjectCardProps {
-  readonly project: Project;
-  readonly index: number;
+  readonly project: Project
+  readonly index: number
 }
 
 export default function ProjectCard({ project, index }: ProjectCardProps) {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const href = project.id ?? projectSlug(project.title)
+  const imageSrc = resolveMediaUrl(project.image_url)
 
   return (
     <div
-      className="flex flex-col gap-6 animate-fade-in-up"
-      style={{
-        animationDelay: `${index * 150 + 600}ms`,
-        animationFillMode: "both",
-        opacity: 0,
-      }}
+      className={`flex flex-col gap-4 animate-fade-in-up sm:gap-5 md:gap-6 ${animStagger(index, 150, 600)}`}
     >
-      {/* Stage Label */}
-      <div className="flex items-center gap-3 mb-2">
-        <span className="text-xs font-label tracking-widest text-primary bg-primary/10 border border-primary/20 px-3 py-1 uppercase">
+      <div className="mb-1 flex items-center gap-3 sm:mb-2">
+        <span className="border border-primary/20 bg-primary/10 px-2.5 py-1 font-label text-[10px] uppercase tracking-widest text-primary sm:px-3 sm:text-xs">
           Stage {(index + 1).toString().padStart(2, "0")}
         </span>
       </div>
 
-      {/* Card */}
       <div
         className="group relative aspect-video bg-surface-container-low overflow-hidden border border-outline-variant/10 transition-all duration-500 hover:border-primary/40 hover:shadow-glow-cyan hover:scale-[1.02] cursor-pointer"
-        onClick={() => navigate(`/project/${index}`)}
+        onClick={() => navigate(`/project/${href}`)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault()
+            navigate(`/project/${href}`)
+          }
+        }}
+        role="link"
+        tabIndex={0}
       >
-        {/* Gradient sweep */}
         <div className="absolute inset-0 bg-linear-to-r from-transparent via-primary/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none z-10" />
-        {/* Top glow */}
         <div className="absolute top-0 left-0 right-0 h-spx bg-linear-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20" />
 
-        {/* Image */}
         <div className="absolute inset-0 scale-[0.95] transition-transform duration-700 group-hover:scale-100">
-          <img
-            src={project.image_url}
-            alt={project.title}
-            className="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-700"
-          />
+          {imageSrc ? (
+            <img
+              src={imageSrc}
+              alt={project.title}
+              className="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-700"
+            />
+          ) : null}
           <div className="absolute inset-0 bg-linear-to-t from-background via-transparent to-transparent" />
         </div>
 
-        {/* VIEW overlay */}
         <div className="absolute top-[40%] left-[60%] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20">
           <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border border-primary-container flex items-center justify-center backdrop-blur-sm bg-primary-container/5 shadow-[0_0_30px_rgba(0,240,255,0.2)]">
             <span className="text-primary font-label text-[10px] md:text-xs font-black tracking-[0.2em]">
@@ -55,14 +58,12 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
           </div>
         </div>
 
-        {/* Title label */}
         <div className="absolute top-4 left-4 md:top-6 md:left-6 z-20">
           <div className="text-[10px] font-label text-primary tracking-widest uppercase">
             Target: {project.title}
           </div>
         </div>
 
-        {/* Dots */}
         <div className="absolute bottom-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20">
           <span className="w-1 h-1 rounded-full bg-primary/60" />
           <span className="w-1 h-1 rounded-full bg-primary/40" />
@@ -70,16 +71,14 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
         </div>
       </div>
 
-      {/* Project Info */}
       <div>
-        <h4 className="font-headline font-bold text-sm md:text-base lg:text-lg xl:text-xl mb-2 text-white group-hover:text-gradient transition-all duration-500">
+        <h4 className="mb-2 font-headline text-base font-bold text-white transition-all duration-500 group-hover:text-gradient sm:text-lg md:text-xl">
           {project.title}
         </h4>
-        <p className="text-xs sm:text-sm md:text-base text-on-surface-variant/80 font-body mb-4">
+        <p className="mb-3 font-body text-xs text-on-surface-variant/80 sm:mb-4 sm:text-sm md:text-base">
           {project.description}
         </p>
 
-        {/* Tech badges */}
         <div className="flex flex-wrap gap-2">
           {project.technologies.slice(0, 3).map((tech) => (
             <span
@@ -96,7 +95,6 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
           )}
         </div>
 
-        {/* Action links */}
         <div className="flex gap-4 mt-4">
           {project.github_url && (
             <a
@@ -104,6 +102,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-xs font-label tracking-widest uppercase text-on-surface-variant hover:text-primary transition-colors"
+              onClick={(e) => e.stopPropagation()}
             >
               <Code className="w-3.5 h-3.5" />
               Code
@@ -115,6 +114,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-xs font-label tracking-widest uppercase text-on-surface-variant hover:text-primary transition-colors"
+              onClick={(e) => e.stopPropagation()}
             >
               <ExternalLink className="w-3.5 h-3.5" />
               Live Demo
@@ -123,5 +123,5 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

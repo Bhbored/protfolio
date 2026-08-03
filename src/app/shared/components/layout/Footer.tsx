@@ -9,7 +9,7 @@ export default function Footer() {
     <footer className="w-full py-12 px-6 md:px-12 border-t border-white/5 bg-background">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mb-12 justify-items-center">
-          {/* Brand */}
+          
           <div className="space-y-4 text-center">
             <h3 className="text-primary font-headline text-lg font-bold uppercase tracking-tight">
               {name.toUpperCase()}
@@ -19,7 +19,7 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Quick Links */}
+          
           <div className="space-y-4 text-center">
             <h3 className="font-headline text-lg font-bold uppercase tracking-tight text-white">
               Quick Links
@@ -37,7 +37,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Connect */}
+          
           <div className="space-y-4 text-center">
             <h3 className="font-headline text-lg font-bold uppercase tracking-tight text-white">
               Connect

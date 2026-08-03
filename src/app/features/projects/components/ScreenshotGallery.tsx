@@ -19,7 +19,7 @@ export default function ScreenshotGallery({ screenshots, isMobileApp = false }: 
 
   return (
     <div className="relative">
-      {/* Nav arrows */}
+      
       <button
         type="button"
         onClick={() => scroll(-1)}
@@ -35,7 +35,7 @@ export default function ScreenshotGallery({ screenshots, isMobileApp = false }: 
         <ChevronRight className="w-5 h-5" />
       </button>
 
-      {/* Mobile nav */}
+      
       <button
         type="button"
         onClick={() => scroll(-1)}
@@ -51,7 +51,7 @@ export default function ScreenshotGallery({ screenshots, isMobileApp = false }: 
         <ChevronRight className="w-5 h-5" />
       </button>
 
-      {/* Gallery scroll container */}
+      
       <div
         ref={galleryRef}
         className="flex gap-6 overflow-x-auto scroll-smooth scrollbar-none py-2"
@@ -72,7 +72,7 @@ export default function ScreenshotGallery({ screenshots, isMobileApp = false }: 
         ))}
       </div>
 
-      {/* Preview Modal */}
+      
       {previewIndex !== null && (
         <div
           className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-3 md:p-4"
@@ -82,7 +82,7 @@ export default function ScreenshotGallery({ screenshots, isMobileApp = false }: 
             className={`relative ${isMobileApp ? "max-w-xs md:max-w-sm" : "max-w-7xl"} w-full flex flex-col items-center justify-center`}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close */}
+            
             <button
               type="button"
               onClick={() => setPreviewIndex(null)}
@@ -91,14 +91,14 @@ export default function ScreenshotGallery({ screenshots, isMobileApp = false }: 
               <X className="w-5 h-5 md:w-6 md:h-6" />
             </button>
 
-            {/* Image */}
+            
             <img
               src={screenshots[previewIndex]}
               alt="Preview"
               className={isMobileApp ? "max-h-[65vh] md:max-h-[75vh] w-auto object-contain rounded-lg" : "w-full h-auto max-h-[85vh] object-contain rounded-lg"}
             />
 
-            {/* Nav */}
+            
             {screenshots.length > 1 && (
               <>
                 <button

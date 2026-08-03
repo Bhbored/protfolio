@@ -1,143 +1,111 @@
-import { useState } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useLanding } from "../../providers/LandingProvider";
-import { useIsMobile } from "../../../hooks/use-mobile";
-import CertificateCard from "./components/CertificateCard";
-
-const pageSize = 4;
+import { useEffect, useMemo, useState } from "react"
+import { ArrowLeft, ArrowRight } from "lucide-react"
+import { useLanding } from "../../providers/LandingProvider"
+import { useIsMobile } from "../../../hooks/use-mobile"
+import CertificateCard from "./components/CertificateCard"
 
 export default function CertificatesSection() {
-  const { certificates } = useLanding();
-  const isMobile = useIsMobile();
-  const [page, setPage] = useState(0);
+  const { certificates } = useLanding()
+  const isMobile = useIsMobile()
+  const pageSize = isMobile ? 1 : 4
+  const [page, setPage] = useState(0)
 
-  const pages: (typeof certificates)[] = [];
-  for (let i = 0; i < certificates.length; i += isMobile ? 2 : pageSize) {
-    pages.push(certificates.slice(i, i + (isMobile ? 2 : pageSize)));
-  }
+  const pages = useMemo(() => {
+    const chunks: (typeof certificates)[] = []
+    for (let i = 0; i < certificates.length; i += pageSize) {
+      chunks.push(certificates.slice(i, i + pageSize))
+    }
+    return chunks.length > 0 ? chunks : [[]]
+  }, [certificates, pageSize])
 
-  const totalPages = pages.length;
-  const next = () => setPage((p) => Math.min(p + 1, totalPages - 1));
-  const prev = () => setPage((p) => Math.max(p - 1, 0));
+  const totalPages = pages.length
+
+  useEffect(() => {
+    setPage(0)
+  }, [pageSize])
+
+  useEffect(() => {
+    setPage((p) => Math.min(p, Math.max(0, totalPages - 1)))
+  }, [totalPages])
 
   return (
-    <section
-      id="certificates"
-      className="min-h-screen pt-16 md:pt-24 pb-20 md:pb-24 px-6 relative"
-    >
-      {/* Background Mesh */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none opacity-20 -z-10 mesh-gradient">
-        <div className="absolute top-1/4 right-1/4 w-64 md:w-96 h-64 md:h-96 bg-primary/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-1/4 left-1/4 w-80 md:w-125 h-80 md:h-125 bg-accent-orange/5 blur-[150px] rounded-full" />
+    <section id="certificates" className="relative min-h-dvh px-4 pb-16 pt-14 sm:px-6 sm:pb-20 sm:pt-16 md:pb-24 md:pt-24">
+      <div className="pointer-events-none absolute inset-0 -z-10 opacity-20 mesh-gradient" aria-hidden>
+        <div className="absolute top-1/4 right-1/4 size-64 rounded-full bg-primary/10 blur-[120px] md:size-96" />
+        <div className="absolute bottom-1/4 left-1/4 size-80 rounded-full bg-accent-orange/5 blur-[150px] md:size-125" />
       </div>
 
-      {/* Header */}
-      <header className="mb-16 md:mb-24 relative max-w-384 mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="inline-block relative">
-            <span
-              className="absolute -top-4 md:-top-6 left-0 font-label text-[8px] md:text-[10px] tracking-[0.4em] text-primary/40 uppercase animate-fade-in-up"
-              style={{
-                animationDelay: "200ms",
-                animationFillMode: "both",
-                opacity: 0,
-              }}
-            >
+      <header className="relative mx-auto mb-10 max-w-384 sm:mb-14 md:mb-24">
+        <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end md:gap-6">
+          <div className="relative inline-block">
+            <span className="absolute -top-3 left-0 font-label text-[8px] uppercase tracking-[0.4em] text-primary/40 sm:-top-4 md:-top-6 md:text-[10px]">
               // VERIFIED_CREDENTIALS
             </span>
-            <h1
-              className="font-headline text-[48px] md:text-[80px] lg:text-[96px] font-black tracking-tighter uppercase leading-none animate-fade-in-left"
-              style={{
-                animationDelay: "400ms",
-                animationFillMode: "both",
-                opacity: 0,
-              }}
-            >
+            <h2 className="font-headline text-4xl font-black uppercase leading-none tracking-tighter sm:text-5xl md:text-[80px] lg:text-[96px]">
               CERTIFIED
               <br />
               <span className="text-primary">COMPETENCE</span>
-            </h1>
+            </h2>
           </div>
-          <div className="max-w-xs md:text-right border-r-2 md:border-r-0 md:border-l-2 border-primary/20 md:pl-6 pr-4 md:pr-0">
-            <p
-              className="text-slate-400 text-xs md:text-sm leading-relaxed animate-fade-in-up"
-              style={{
-                animationDelay: "600ms",
-                animationFillMode: "both",
-                opacity: 0,
-              }}
-            >
+          <div className="max-w-xs border-l-2 border-primary/20 pl-4 md:pl-6 md:text-right">
+            <p className="font-body text-xs leading-relaxed text-slate-400 sm:text-sm">
               Professional certifications and technical achievements.
             </p>
           </div>
         </div>
-        <div
-          className="mt-4 flex items-center gap-2 animate-fade-in-up"
-          style={{
-            animationDelay: "800ms",
-            animationFillMode: "both",
-            opacity: 0,
-          }}
-        >
-          <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-          <span className="font-label text-[10px] tracking-[0.3em] uppercase text-slate-500">
+        <div className="mt-4 flex items-center gap-2">
+          <span className="size-2 animate-pulse rounded-full bg-primary" />
+          <span className="font-label text-[10px] uppercase tracking-[0.3em] text-slate-500">
             {certificates.length} Credentials Verified
           </span>
         </div>
       </header>
 
-      {/* Track */}
-      <div className="max-w-384 mx-auto relative">
-        <div className="overflow-hidden max-md:overflow-x-auto max-md:scrollbar-none">
+      <div className="relative mx-auto max-w-384">
+        <div className="overflow-hidden">
           <div
-            className="flex gap-12 transition-transform duration-500 ease-in-out"
-            style={
-              !isMobile
-                ? { transform: `translateX(-${page * 100}%)` }
-                : undefined
-            }
+            className="flex transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateX(-${page * 100}%)` }}
           >
             {pages.map((pageCerts, pi) => (
-              <div key={pi} className="flex gap-12 shrink-0 w-full">
+              <div key={pi} className="flex w-full shrink-0 gap-4 sm:gap-6 md:gap-8">
                 {pageCerts.map((cert) => {
-                  const realIndex = certificates.indexOf(cert);
+                  const realIndex = certificates.indexOf(cert)
                   return (
-                    <div
-                      key={cert.id}
-                      className="shrink-0 w-[calc(50vw-48px)] md:w-[calc(25vw-48px)] min-w-60 md:min-w-70 md:max-w-90"
-                    >
+                    <div key={cert.id} className="min-w-0 flex-1">
                       <CertificateCard certificate={cert} index={realIndex} />
                     </div>
-                  );
+                  )
                 })}
               </div>
             ))}
           </div>
         </div>
 
-        {/* Nav */}
-        <div className="flex justify-between items-center mt-12 md:flex">
+        <div className="mt-8 flex items-center justify-between gap-3 sm:mt-12">
           <button
-            onClick={prev}
+            type="button"
+            onClick={() => setPage((p) => Math.max(p - 1, 0))}
             disabled={page === 0}
-            className="flex items-center gap-2 px-6 py-3 bg-surface-container-high border border-outline-variant/30 text-primary font-label text-xs tracking-widest uppercase hover:border-primary/50 hover:shadow-glow-cyan transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
+            className="inline-flex min-h-11 items-center gap-2 border border-outline-variant/30 bg-surface-container-high px-4 py-2.5 font-label text-[10px] uppercase tracking-widest text-primary transition-all hover:border-primary/50 hover:shadow-glow-cyan disabled:cursor-not-allowed disabled:opacity-30 sm:px-6 sm:text-xs"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Previous
+            <ArrowLeft className="size-3.5" aria-hidden />
+            <span className="sm:inline">Prev</span>
           </button>
-          <span className="text-on-surface-variant font-label text-xs tracking-widest">
+          <span className="font-label text-xs tracking-widest text-on-surface-variant tabular-nums">
             {page + 1} / {totalPages}
           </span>
           <button
-            onClick={next}
+            type="button"
+            onClick={() => setPage((p) => Math.min(p + 1, totalPages - 1))}
             disabled={page + 1 >= totalPages}
-            className="flex items-center gap-2 px-6 py-3 bg-surface-container-high border border-outline-variant/30 text-primary font-label text-xs tracking-widest uppercase hover:border-primary/50 hover:shadow-glow-cyan transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
+            className="inline-flex min-h-11 items-center gap-2 border border-outline-variant/30 bg-surface-container-high px-4 py-2.5 font-label text-[10px] uppercase tracking-widest text-primary transition-all hover:border-primary/50 hover:shadow-glow-cyan disabled:cursor-not-allowed disabled:opacity-30 sm:px-6 sm:text-xs"
           >
             Next
-            <ArrowRight className="w-3.5 h-3.5" />
+            <ArrowRight className="size-3.5" aria-hidden />
           </button>
         </div>
       </div>
     </section>
-  );
+  )
 }

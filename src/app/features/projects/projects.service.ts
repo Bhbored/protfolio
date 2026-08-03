@@ -7,6 +7,8 @@ import {
 } from "../../shared/api/supabase-utils"
 import type { Project, ProjectCategory } from "../../shared/types"
 
+export type NewProject = Omit<Project, "id">
+
 export const projectKeys = {
   all: ["projects"] as const,
   list: () => [...projectKeys.all, "list"] as const,
@@ -30,6 +32,31 @@ export async function fetchProjects(): Promise<Project[]> {
   const result = await supabase.from("projects").select("*")
   const rows = await throwIfError(result, "projects")
   return ((rows ?? []) as Project[]).map(normalizeProject)
+}
+
+export async function createProject(row: NewProject): Promise<Project> {
+  const result = await supabase.from("projects").insert(row).select().single()
+  const data = await throwIfError(result, "projects.create")
+  return normalizeProject(data as Project)
+}
+
+export async function updateProject(
+  id: string,
+  row: NewProject,
+): Promise<Project> {
+  const result = await supabase
+    .from("projects")
+    .update(row)
+    .eq("id", id)
+    .select()
+    .single()
+  const data = await throwIfError(result, "projects.update")
+  return normalizeProject(data as Project)
+}
+
+export async function deleteProject(id: string): Promise<void> {
+  const result = await supabase.from("projects").delete().eq("id", id)
+  await throwIfError(result, "projects.delete")
 }
 
 export const projectQueries = {

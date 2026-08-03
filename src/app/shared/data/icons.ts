@@ -106,3 +106,19 @@ export const materialIconMap: Record<number, LucideIcon> = {
 export function getIcon(id: number): LucideIcon {
   return materialIconMap[id] ?? Code
 }
+
+export interface IconOption {
+  id: number
+  name: string
+  Icon: LucideIcon
+}
+
+export function getIconOptions(): IconOption[] {
+  return Object.entries(materialIconMap)
+    .map(([id, Icon]) => ({
+      id: Number(id),
+      name: Icon.displayName ?? Icon.name ?? String(id),
+      Icon,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name))
+}

@@ -1,35 +1,87 @@
+import { supabase } from "../app/shared/api/supabase"
+
 const uploadUrl = import.meta.env.VITE_UPLOAD_FUNCTION_URL
-const baseFolder = import.meta.env.VITE_R2_BASE_FOLDER
+const baseFolder = import.meta.env.VITE_R2_BASE_FOLDER ?? "portfolio"
 
 export function buildFolderPath(projectFolder: string): string {
-  const clean = projectFolder.trim().replace(/^\/+|\/+$/g, "")
-  return clean ? `${baseFolder}/${clean}` : baseFolder
+  const clean = projectFolder
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9-_]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+  const base = (baseFolder ?? "portfolio").replace(/^\/+|\/+$/g, "")
+  return clean ? `${base}/${clean}` : base
 }
 
-export async function uploadImage(file: File, projectFolder: string): Promise<string> {
+function uniqueFileName(file: File): string {
+  const ext = file.name.includes(".")
+    ? file.name.slice(file.name.lastIndexOf("."))
+    : ""
+  const stamp = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+  return `${stamp}${ext}`
+}
+
+async function authHeaders(): Promise<HeadersInit> {
+  const headers: Record<string, string> = {
+    Accept: "application/json",
+  }
+
+  const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+  if (anonKey) {
+    headers.Authorization = `Bearer ${anonKey}`
+    headers.apikey = anonKey
+  }
+
+  const { data } = await supabase.auth.getSession()
+  const token = data.session?.access_token
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
+  }
+
+  return headers
+}
+
+export async function uploadImage(
+  file: File,
+  projectFolder: string,
+): Promise<string> {
+  if (!uploadUrl) {
+    throw new Error("VITE_UPLOAD_FUNCTION_URL is not configured")
+  }
+
   const formData = new FormData()
-  formData.append("file", file)
+  const named = new File([file], uniqueFileName(file), { type: file.type })
+  formData.append("file", named)
   formData.append("folder", buildFolderPath(projectFolder))
 
-  try {
-    const response = await fetch(uploadUrl, { method: "POST", body: formData })
+  const response = await fetch(uploadUrl, {
+    method: "POST",
+    headers: await authHeaders(),
+    body: formData,
+  })
 
-    if (!response.ok) {
-      const body = await response.text().catch(() => "")
-      throw new Error(body || `Upload failed with status ${response.status}`)
-    }
-
-    const data = (await response.json()) as { imageUrl: string }
-    return data.imageUrl
-  } catch (error) {
-    throw new Error(`Failed to upload image: ${error instanceof Error ? error.message : "Unknown error"}`)
+  if (!response.ok) {
+    const body = await response.text().catch(() => "")
+    throw new Error(
+      body || `Upload failed with status ${response.status}`,
+    )
   }
+
+  const data = (await response.json()) as {
+    imageUrl?: string
+    url?: string
+    publicUrl?: string
+  }
+  const url = data.imageUrl ?? data.url ?? data.publicUrl
+  if (!url) {
+    throw new Error("Upload succeeded but no image URL was returned")
+  }
+  return url
 }
 
-export async function uploadImages(files: File[], projectFolder: string): Promise<string[]> {
-  try {
-    return await Promise.all(files.map((file) => uploadImage(file, projectFolder)))
-  } catch (error) {
-    throw new Error(`Failed to upload images: ${error instanceof Error ? error.message : "Unknown error"}`)
-  }
+export async function uploadImages(
+  files: File[],
+  projectFolder: string,
+): Promise<string[]> {
+  return Promise.all(files.map((file) => uploadImage(file, projectFolder)))
 }

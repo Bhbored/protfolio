@@ -10,7 +10,6 @@ export interface Language {
   proficiency: ProficiencyLevel
 }
 
-/** Matches `personal_info` — nullable DB columns coerced to defaults in the data layer */
 export interface PersonalInfo {
   id?: string
   name: string

@@ -62,6 +62,22 @@ function normalizePersonalInfo(row: PersonalInfo): PersonalInfo {
   }
 }
 
+function toPersonalInfoPayload(patch: Omit<PersonalInfo, "id">) {
+  return {
+    name: patch.name,
+    title: patch.title,
+    email: patch.email,
+    phone: patch.phone,
+    location: patch.location,
+    summary: patch.summary,
+    headline: patch.headline,
+    profile_image: patch.profile_image,
+    is_available_for_work: patch.is_available_for_work,
+    social: patch.social,
+    languages: patch.languages,
+  }
+}
+
 export async function fetchPersonalInfo(): Promise<PersonalInfo> {
   const result = await supabase
     .from("personal_info")
@@ -72,6 +88,32 @@ export async function fetchPersonalInfo(): Promise<PersonalInfo> {
   const row = await throwIfError(result, "personal_info")
   if (!row) return EMPTY_PERSONAL_INFO
   return normalizePersonalInfo(row as PersonalInfo)
+}
+
+export async function createPersonalInfo(
+  patch: Omit<PersonalInfo, "id">,
+): Promise<PersonalInfo> {
+  const result = await supabase
+    .from("personal_info")
+    .insert(toPersonalInfoPayload(patch))
+    .select()
+    .single()
+  const data = await throwIfError(result, "personal_info.create")
+  return normalizePersonalInfo(data as PersonalInfo)
+}
+
+export async function updatePersonalInfo(
+  id: string,
+  patch: Omit<PersonalInfo, "id">,
+): Promise<PersonalInfo> {
+  const result = await supabase
+    .from("personal_info")
+    .update(toPersonalInfoPayload(patch))
+    .eq("id", id)
+    .select()
+    .single()
+  const data = await throwIfError(result, "personal_info.update")
+  return normalizePersonalInfo(data as PersonalInfo)
 }
 
 export const personalInfoQueries = {

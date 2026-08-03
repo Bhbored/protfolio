@@ -1,214 +1,211 @@
+import { useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { Link } from "react-router-dom"
 import {
-  Briefcase,
-  Zap,
   BadgeCheck,
-  History,
+  Briefcase,
   GraduationCap,
+  History,
   Layers,
-  ExternalLink,
+  Zap,
 } from "lucide-react"
+import { personalInfoQueries } from "../../landing/personal-info.service"
 import { projectQueries } from "../../projects/projects.service"
 import { skillQueries } from "../../skills/skills.service"
 import { certificateQueries } from "../../certificates/certificates.service"
 import { experienceQueries } from "../../experience/experiences.service"
 import { educationQueries } from "../../education/educations.service"
-import { getProjectCategoryName } from "../../../../lib/project-category"
-import { getIcon } from "../../../shared/data/icons"
+import WelcomeStrip from "../components/dashboard/WelcomeStrip"
+import StatStrip from "../components/dashboard/StatStrip"
+import type { StatItem } from "../components/dashboard/StatStrip"
+import ContentHealth from "../components/dashboard/ContentHealth"
+import type { HealthItem } from "../components/dashboard/ContentHealth"
+import QuickActions from "../components/dashboard/QuickActions"
+import RecentProjects from "../components/dashboard/RecentProjects"
+import SkillsSnapshot from "../components/dashboard/SkillsSnapshot"
+import CareerTimeline from "../components/dashboard/CareerTimeline"
 
 export default function DashboardPage() {
-  const { data: projects = [] } = useQuery(projectQueries.list())
-  const { data: skills = [] } = useQuery(skillQueries.list())
-  const { data: categories = [] } = useQuery(skillQueries.categories())
-  const { data: certificates = [] } = useQuery(certificateQueries.list())
-  const { data: experiences = [] } = useQuery(experienceQueries.list())
-  const { data: educations = [] } = useQuery(educationQueries.list())
+  const personalInfoQuery = useQuery(personalInfoQueries.detail())
+  const projectsQuery = useQuery(projectQueries.list())
+  const skillsQuery = useQuery(skillQueries.list())
+  const categoriesQuery = useQuery(skillQueries.categories())
+  const certificatesQuery = useQuery(certificateQueries.list())
+  const experiencesQuery = useQuery(experienceQueries.list())
+  const educationsQuery = useQuery(educationQueries.list())
 
-  const categoryName = (id: string | null) =>
-    categories.find((c) => c.id === id)?.category ?? "—"
+  const projects = projectsQuery.data ?? []
+  const skills = skillsQuery.data ?? []
+  const categories = categoriesQuery.data ?? []
+  const certificates = certificatesQuery.data ?? []
+  const experiences = experiencesQuery.data ?? []
+  const educations = educationsQuery.data ?? []
+  const personalInfo = personalInfoQuery.data
 
-  const stats = [
-    { label: "Projects", value: projects.length, icon: Briefcase, to: "/admin/projects" },
-    { label: "Skills", value: skills.length, icon: Zap, to: "/admin/skills" },
-    { label: "Certificates", value: certificates.length, icon: BadgeCheck, to: "/admin/certificates" },
-    { label: "Experience", value: experiences.length, icon: History, to: "/admin/experiences" },
-    { label: "Education", value: educations.length, icon: GraduationCap, to: "/admin/educations" },
-    { label: "Categories", value: categories.length, icon: Layers, to: "/admin/categories" },
-  ]
+  const listsLoading =
+    projectsQuery.isPending ||
+    skillsQuery.isPending ||
+    categoriesQuery.isPending ||
+    certificatesQuery.isPending ||
+    experiencesQuery.isPending ||
+    educationsQuery.isPending
+
+  const profileLoading = personalInfoQuery.isPending
+
+  const hasError = [
+    personalInfoQuery.error,
+    projectsQuery.error,
+    skillsQuery.error,
+    categoriesQuery.error,
+    certificatesQuery.error,
+    experiencesQuery.error,
+    educationsQuery.error,
+  ].some(Boolean)
+
+  const stats: StatItem[] = useMemo(
+    () => [
+      { label: "Projects", value: projects.length, icon: Briefcase, to: "/admin/projects" },
+      { label: "Skills", value: skills.length, icon: Zap, to: "/admin/skills" },
+      {
+        label: "Certificates",
+        value: certificates.length,
+        icon: BadgeCheck,
+        to: "/admin/certificates",
+      },
+      {
+        label: "Experience",
+        value: experiences.length,
+        icon: History,
+        to: "/admin/experiences",
+      },
+      {
+        label: "Education",
+        value: educations.length,
+        icon: GraduationCap,
+        to: "/admin/educations",
+      },
+      {
+        label: "Categories",
+        value: categories.length,
+        icon: Layers,
+        to: "/admin/categories",
+      },
+    ],
+    [
+      projects.length,
+      skills.length,
+      certificates.length,
+      experiences.length,
+      educations.length,
+      categories.length,
+    ],
+  )
+
+  const healthItems: HealthItem[] = useMemo(
+    () => [
+      {
+        id: "profile-image",
+        label: "Profile photo set",
+        done: Boolean(personalInfo?.profile_image?.trim()),
+        to: "/admin/personal-info",
+      },
+      {
+        id: "bio",
+        label: "Bio / summary written",
+        done: Boolean(personalInfo?.summary?.trim() || personalInfo?.headline?.trim()),
+        to: "/admin/personal-info",
+      },
+      {
+        id: "project",
+        label: "At least one project",
+        done: projects.length > 0,
+        to: "/admin/projects",
+      },
+      {
+        id: "skill",
+        label: "At least one skill",
+        done: skills.length > 0,
+        to: "/admin/skills",
+      },
+      {
+        id: "certificate",
+        label: "At least one certificate",
+        done: certificates.length > 0,
+        to: "/admin/certificates",
+      },
+      {
+        id: "experience",
+        label: "Experience entry added",
+        done: experiences.length > 0,
+        to: "/admin/experiences",
+      },
+      {
+        id: "education",
+        label: "Education entry added",
+        done: educations.length > 0,
+        to: "/admin/educations",
+      },
+    ],
+    [
+      personalInfo,
+      projects.length,
+      skills.length,
+      certificates.length,
+      experiences.length,
+      educations.length,
+    ],
+  )
 
   return (
-    <div className="space-y-8">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-        {stats.map(({ label, value, icon: Icon, to }) => (
-          <Link
-            key={label}
-            to={to}
-            className="group rounded-xl border border-white/10 bg-linear-to-br from-surface-container-highest to-surface-container-high p-4 transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-glow-cyan focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-          >
-            <div className="mb-3 flex size-10 items-center justify-center rounded-md bg-primary/10 text-primary">
-              <Icon className="size-5" />
-            </div>
-            <h3 className="font-label text-xs uppercase tracking-widest text-on-surface-variant">
-              {label}
-            </h3>
-            <p className="mt-1 font-headline text-2xl font-bold tabular-nums text-on-surface">
-              {value}
-            </p>
-          </Link>
-        ))}
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 sm:gap-5 md:gap-6">
+      {hasError && (
+        <div
+          role="alert"
+          className="rounded-2xl border border-secondary/40 bg-secondary/10 px-4 py-3.5 font-body text-sm text-secondary"
+        >
+          Some dashboard data failed to load. Refresh or check your connection.
+        </div>
+      )}
+
+      <WelcomeStrip
+        personalInfo={personalInfo}
+        loading={profileLoading}
+        projectCount={projects.length}
+        skillCount={skills.length}
+      />
+
+      <StatStrip stats={stats} loading={listsLoading} />
+
+      <div className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-5 lg:gap-6">
+        <div className="lg:col-span-2">
+          <ContentHealth
+            items={healthItems}
+            loading={profileLoading || listsLoading}
+          />
+        </div>
+        <div className="lg:col-span-3">
+          <QuickActions />
+        </div>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-3">
-        <section className="rounded-xl border border-white/10 bg-surface-container-high overflow-hidden">
-          <header className="flex items-center justify-between border-b border-white/10 px-4 py-3">
-            <h2 className="font-headline text-base font-bold">Recent Projects</h2>
-            <Link to="/admin/projects" className="font-label text-xs uppercase tracking-widest text-primary hover:underline">
-              View all
-            </Link>
-          </header>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[320px] text-left">
-              <thead>
-                <tr className="border-b border-white/10">
-                  <th className="px-4 py-3 font-label text-xs uppercase tracking-widest text-on-surface-variant">Title</th>
-                  <th className="px-4 py-3 font-label text-xs uppercase tracking-widest text-on-surface-variant">Category</th>
-                  <th className="px-4 py-3 font-label text-xs uppercase tracking-widest text-on-surface-variant">Tech</th>
-                </tr>
-              </thead>
-              <tbody>
-                {projects.slice(0, 5).map((p) => (
-                  <tr key={p.id ?? p.title} className="border-b border-white/5 hover:bg-white/[0.03]">
-                    <td className="px-4 py-3 font-body text-sm text-primary">{p.title}</td>
-                    <td className="px-4 py-3">
-                      <span className="rounded-full bg-primary/10 px-2 py-0.5 font-label text-[10px] uppercase tracking-wider text-primary">
-                        {getProjectCategoryName(p.project_category)}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 font-label text-xs tabular-nums text-on-surface-variant">
-                      {p.technologies.length}
-                    </td>
-                  </tr>
-                ))}
-                {projects.length === 0 && (
-                  <tr>
-                    <td colSpan={3} className="px-4 py-6 text-center text-sm text-on-surface-variant">
-                      No projects yet
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section className="rounded-xl border border-white/10 bg-surface-container-high overflow-hidden">
-          <header className="flex items-center justify-between border-b border-white/10 px-4 py-3">
-            <h2 className="font-headline text-base font-bold">Skills Overview</h2>
-            <Link to="/admin/skills" className="font-label text-xs uppercase tracking-widest text-primary hover:underline">
-              View all
-            </Link>
-          </header>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[320px] text-left">
-              <thead>
-                <tr className="border-b border-white/10">
-                  <th className="px-4 py-3 font-label text-xs uppercase tracking-widest text-on-surface-variant">Skill</th>
-                  <th className="px-4 py-3 font-label text-xs uppercase tracking-widest text-on-surface-variant">Category</th>
-                  <th className="px-4 py-3 font-label text-xs uppercase tracking-widest text-on-surface-variant">Mastery</th>
-                </tr>
-              </thead>
-              <tbody>
-                {skills.slice(0, 5).map((s) => {
-                  const Icon = getIcon(s.icon)
-                  return (
-                    <tr key={s.id} className="border-b border-white/5 hover:bg-white/[0.03]">
-                      <td className="px-4 py-3">
-                        <span className="inline-flex items-center gap-2 text-sm">
-                          <Icon className="size-4 text-primary" />
-                          {s.title}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 font-label text-xs text-on-surface-variant">
-                        {categoryName(s.skill_category_id)}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <div className="h-1.5 w-16 overflow-hidden rounded-full bg-white/10">
-                            <div
-                              className="h-full bg-primary"
-                              style={{ width: `${s.mastery_level}%` }}
-                            />
-                          </div>
-                          <span className="font-label text-xs tabular-nums">{s.mastery_level}%</span>
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                })}
-                {skills.length === 0 && (
-                  <tr>
-                    <td colSpan={3} className="px-4 py-6 text-center text-sm text-on-surface-variant">
-                      No skills yet
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section className="rounded-xl border border-white/10 bg-surface-container-high overflow-hidden">
-          <header className="flex items-center justify-between border-b border-white/10 px-4 py-3">
-            <h2 className="font-headline text-base font-bold">Certificates</h2>
-            <Link to="/admin/certificates" className="font-label text-xs uppercase tracking-widest text-primary hover:underline">
-              View all
-            </Link>
-          </header>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[320px] text-left">
-              <thead>
-                <tr className="border-b border-white/10">
-                  <th className="px-4 py-3 font-label text-xs uppercase tracking-widest text-on-surface-variant">Title</th>
-                  <th className="px-4 py-3 font-label text-xs uppercase tracking-widest text-on-surface-variant">Issuer</th>
-                  <th className="px-4 py-3 font-label text-xs uppercase tracking-widest text-on-surface-variant">Year</th>
-                  <th className="px-4 py-3 font-label text-xs uppercase tracking-widest text-on-surface-variant">Link</th>
-                </tr>
-              </thead>
-              <tbody>
-                {certificates.slice(0, 5).map((c) => (
-                  <tr key={c.id} className="border-b border-white/5 hover:bg-white/[0.03]">
-                    <td className="px-4 py-3 text-sm text-primary">{c.title}</td>
-                    <td className="px-4 py-3 text-sm text-on-surface-variant">{c.issuer}</td>
-                    <td className="px-4 py-3 font-label text-xs tabular-nums">{c.year}</td>
-                    <td className="px-4 py-3">
-                      {c.link ? (
-                        <a
-                          href={c.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 font-label text-xs uppercase tracking-wider text-primary hover:underline"
-                        >
-                          View <ExternalLink className="size-3" />
-                        </a>
-                      ) : (
-                        <span className="text-on-surface-variant">—</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-                {certificates.length === 0 && (
-                  <tr>
-                    <td colSpan={4} className="px-4 py-6 text-center text-sm text-on-surface-variant">
-                      No certificates yet
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </section>
+      
+      <div className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-5 lg:gap-6">
+        <div className="lg:col-span-3">
+          <RecentProjects projects={projects} loading={projectsQuery.isPending} />
+        </div>
+        <div className="lg:col-span-2">
+          <SkillsSnapshot
+            skills={skills}
+            categories={categories}
+            loading={skillsQuery.isPending || categoriesQuery.isPending}
+          />
+        </div>
       </div>
+
+      <CareerTimeline
+        experiences={experiences}
+        educations={educations}
+        loading={experiencesQuery.isPending || educationsQuery.isPending}
+      />
     </div>
   )
 }

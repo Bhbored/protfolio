@@ -24,8 +24,8 @@ export default function NavMenu() {
       <nav className="fixed top-0 w-full h-20 z-50 bg-background/80 backdrop-blur-xl shadow-[0_0_20px_rgba(0,240,255,0.08)] flex justify-between items-center px-6 md:px-12 animate-fade-in-down">
         <div className="absolute inset-0 grid-pattern opacity-20 pointer-events-none" />
 
-        {/* Logo */}
-        <div className="relative group animate-fade-in-left delay-200">
+        
+        <div className="relative group animate-fade-in-left anim-d-200">
           <button
             onClick={() => navigateToSection("Home")}
             className="w-10 h-10 border-2 border-primary-container flex items-center justify-center font-headline text-2xl font-bold text-primary-container leading-none hover:scale-110 transition-transform duration-300"
@@ -34,7 +34,7 @@ export default function NavMenu() {
           </button>
         </div>
 
-        {/* Desktop Nav */}
+        
         <div className="hidden md:flex items-center gap-8 font-body text-lg tracking-widest uppercase">
           {navItems.map((item) => (
             <button
@@ -54,7 +54,7 @@ export default function NavMenu() {
           ))}
         </div>
 
-        {/* Desktop CTA */}
+        
         <div className="hidden md:flex items-center gap-4">
           <button
             type="button"
@@ -75,11 +75,13 @@ export default function NavMenu() {
           </button>
         </div>
 
-        {/* Mobile Hamburger */}
+        
         <button
-          className="md:hidden flex flex-col gap-1.5 z-50 p-2"
+          type="button"
+          className="z-50 flex size-11 flex-col items-center justify-center gap-1.5 md:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
+          aria-expanded={mobileOpen}
         >
           <span
             className={`w-6 h-0.5 bg-primary-container transition-all duration-300 ${
@@ -99,7 +101,7 @@ export default function NavMenu() {
         </button>
       </nav>
 
-      {/* Mobile Overlay */}
+      
       <div
         className={`fixed inset-0 bg-background/95 backdrop-blur-xl z-40 md:hidden transition-all duration-500 ${
           mobileOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"

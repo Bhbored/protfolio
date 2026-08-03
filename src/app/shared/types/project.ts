@@ -1,6 +1,5 @@
 import type { ProjectCategory } from "./enums"
 
-/** Matches `projects` — nullable DB columns coerced to defaults in the data layer */
 export interface Project {
   id?: string
   title: string

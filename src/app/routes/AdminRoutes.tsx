@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom"
 import { AuthProvider } from "../providers/AuthProvider"
+import { ToastProvider } from "../shared/components/Toast"
 import AdminLayout from "../features/admin/components/AdminLayout"
 import ProtectedRoute from "../features/admin/components/ProtectedRoute"
 import LoginPage from "../features/admin/pages/LoginPage"
@@ -15,26 +16,28 @@ import CertificatesPage from "../features/admin/pages/CertificatesPage"
 export default function AdminRoutes() {
   return (
     <AuthProvider>
-      <Routes>
-        <Route path="login" element={<LoginPage />} />
-        <Route
-          element={
-            <ProtectedRoute>
-              <AdminLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<DashboardPage />} />
-          <Route path="personal-info" element={<PersonalInfoPage />} />
-          <Route path="skills" element={<SkillsPage />} />
-          <Route path="categories" element={<CategoriesPage />} />
-          <Route path="projects" element={<ProjectsPage />} />
-          <Route path="experiences" element={<ExperiencesPage />} />
-          <Route path="educations" element={<EducationsPage />} />
-          <Route path="certificates" element={<CertificatesPage />} />
-          <Route path="*" element={<Navigate to="/admin" replace />} />
-        </Route>
-      </Routes>
+      <ToastProvider>
+        <Routes>
+          <Route path="login" element={<LoginPage />} />
+          <Route
+            element={
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<DashboardPage />} />
+            <Route path="personal-info" element={<PersonalInfoPage />} />
+            <Route path="skills" element={<SkillsPage />} />
+            <Route path="categories" element={<CategoriesPage />} />
+            <Route path="projects" element={<ProjectsPage />} />
+            <Route path="experiences" element={<ExperiencesPage />} />
+            <Route path="educations" element={<EducationsPage />} />
+            <Route path="certificates" element={<CertificatesPage />} />
+            <Route path="*" element={<Navigate to="/admin" replace />} />
+          </Route>
+        </Routes>
+      </ToastProvider>
     </AuthProvider>
   )
 }

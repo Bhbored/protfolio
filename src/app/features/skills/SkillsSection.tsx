@@ -1,133 +1,117 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useIsMobile } from "../../../hooks/use-mobile"
 import { useLanding } from "../../providers/LandingProvider"
 import type { Skill } from "../../shared/types"
 import SkillCard from "./components/SkillCard"
 
-const pageSize = 3
-
 export default function SkillsSection() {
   const { categories, getSkillsByCategoryId } = useLanding()
   const isMobile = useIsMobile()
-  const [pageIndices, setPageIndices] = useState<Record<string, number>>(() =>
-    Object.fromEntries(categories.map((c) => [c.id, 0]))
-  )
+  const pageSize = isMobile ? 1 : 3
+  const [pageIndices, setPageIndices] = useState<Record<string, number>>({})
 
-  const slideCategory = (categoryId: string, direction: number) => {
+  useEffect(() => {
+    setPageIndices({})
+  }, [pageSize])
+
+  const slideCategory = (categoryId: string, direction: number, totalPages: number) => {
     setPageIndices((prev) => {
       const current = prev[categoryId] ?? 0
-      return { ...prev, [categoryId]: current + direction }
+      const next = Math.min(Math.max(current + direction, 0), totalPages - 1)
+      return { ...prev, [categoryId]: next }
     })
   }
 
   return (
-    <section id="skills" className="min-h-screen pt-16 md:pt-20 pb-24 md:pb-32 px-6 max-w-384 mx-auto overflow-x-hidden mesh-gradient">
-      {/* Section Header */}
-      <header className="mb-16 md:mb-24 relative">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="inline-block relative">
-            <span
-              className="absolute -top-4 md:-top-6 left-0 font-label text-[8px] md:text-[10px] tracking-[0.4em] text-primary/40 uppercase animate-fade-in-up"
-              style={{ animationDelay: "200ms", animationFillMode: "both", opacity: 0 }}
-            >
+    <section
+      id="skills"
+      className="mx-auto min-h-dvh max-w-384 overflow-x-hidden px-4 pb-20 pt-14 mesh-gradient sm:px-6 sm:pb-24 sm:pt-16 md:pb-32 md:pt-20"
+    >
+      <header className="relative mb-10 sm:mb-14 md:mb-24">
+        <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end md:gap-6">
+          <div className="relative inline-block">
+            <span className="absolute -top-3 left-0 font-label text-[8px] uppercase tracking-[0.4em] text-primary/40 sm:-top-4 md:-top-6 md:text-[10px]">
               // SYSTEM_CAPABILITIES_LOADED
             </span>
-            <h1
-              className="font-headline text-[48px] md:text-[80px] lg:text-[96px] font-black tracking-tighter uppercase leading-none animate-fade-in-left"
-              style={{ animationDelay: "400ms", animationFillMode: "both", opacity: 0 }}
-            >
-              TECH<br /><span className="text-primary">ARSENAL</span>
-            </h1>
+            <h2 className="font-headline text-4xl font-black uppercase leading-none tracking-tighter sm:text-5xl md:text-[80px] lg:text-[96px]">
+              TECH
+              <br />
+              <span className="text-primary">ARSENAL</span>
+            </h2>
           </div>
-          <div className="max-w-xs md:text-right border-r-2 md:border-r-0 md:border-l-2 border-primary/20 md:pl-6 pr-4 md:pr-0">
-            <p
-              className="text-slate-400 text-xs md:text-sm leading-relaxed animate-fade-in-up"
-              style={{ animationDelay: "600ms", animationFillMode: "both", opacity: 0 }}
-            >
+          <div className="max-w-xs border-l-2 border-primary/20 pl-4 md:pl-6 md:text-right">
+            <p className="font-body text-xs leading-relaxed text-slate-400 sm:text-sm">
               Technologies and tools used to build cross-platform applications.
             </p>
           </div>
         </div>
-        <div
-          className="mt-4 flex items-center gap-2 animate-fade-in-up"
-          style={{ animationDelay: "800ms", animationFillMode: "both", opacity: 0 }}
-        >
-          <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-          <span className="font-label text-[10px] tracking-[0.3em] uppercase text-slate-500">
+        <div className="mt-4 flex items-center gap-2">
+          <span className="size-2 animate-pulse rounded-full bg-primary" />
+          <span className="font-label text-[10px] uppercase tracking-[0.3em] text-slate-500">
             {categories.length} Skill Categories
           </span>
         </div>
       </header>
 
-      {/* Categories */}
       {categories.map((category, catIndex) => {
         const categorySkills = getSkillsByCategoryId(category.id)
         const currentPage = pageIndices[category.id] ?? 0
         const totalPages = Math.max(1, Math.ceil(categorySkills.length / pageSize))
 
-        // Build pages
         const pages: Skill[][] = []
         for (let i = 0; i < categorySkills.length; i += pageSize) {
           pages.push(categorySkills.slice(i, i + pageSize))
         }
+        if (pages.length === 0) pages.push([])
 
         return (
-          <div
-            key={category.id}
-            className="mb-16 md:mb-24 animate-fade-in-up"
-            style={{
-              animationDelay: `${800 + catIndex * 150}ms`,
-              animationFillMode: "both",
-              opacity: 0,
-            }}
-          >
-            {/* Category Header */}
-            <div className="flex items-center justify-between mb-6 md:mb-8">
-              <div className="flex items-center gap-3 md:gap-4">
-                <span className="font-label text-xs bg-surface-container-high px-2 py-1 text-primary">
+          <div key={category.id} className="mb-12 sm:mb-16 md:mb-24">
+            <div className="mb-5 flex items-center justify-between gap-3 sm:mb-6 md:mb-8">
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="shrink-0 bg-surface-container-high px-2 py-1 font-label text-xs text-primary">
                   0{catIndex + 1}
                 </span>
-                <h3 className="font-headline font-bold tracking-tight text-lg md:text-xl uppercase">
+                <h3 className="truncate font-headline text-base font-bold uppercase tracking-tight sm:text-lg md:text-xl">
                   {category.category}
                 </h3>
               </div>
-              <div className="hidden md:flex items-center gap-3">
-                <button
-                  onClick={() => slideCategory(category.id, -1)}
-                  disabled={currentPage === 0}
-                  className="flex items-center justify-center w-9 h-9 border border-white/10 rounded-lg bg-white/3 text-zinc-400 cursor-pointer backdrop-blur-sm transition-all duration-200 hover:border-primary/50 hover:text-primary hover:bg-primary/5 hover:shadow-[0_0_12px_rgba(0,240,255,0.15)] hover:-translate-y-0.5 active:scale-96 disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none"
-                >
-                  <ChevronLeft className="w-3.5 h-3.5" />
-                </button>
-                <span className="text-on-surface-variant font-label text-[10px] tracking-widest">
-                  {currentPage + 1}/{totalPages}
-                </span>
-                <button
-                  onClick={() => slideCategory(category.id, 1)}
-                  disabled={currentPage + 1 >= totalPages}
-                  className="flex items-center justify-center w-9 h-9 border border-white/10 rounded-lg bg-white/3 text-zinc-400 cursor-pointer backdrop-blur-sm transition-all duration-200 hover:border-primary/50 hover:text-primary hover:bg-primary/5 hover:shadow-[0_0_12px_rgba(0,240,255,0.15)] hover:-translate-y-0.5 active:scale-96 disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none"
-                >
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
+              {totalPages > 1 && (
+                <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                  <button
+                    type="button"
+                    onClick={() => slideCategory(category.id, -1, totalPages)}
+                    disabled={currentPage === 0}
+                    aria-label="Previous skills"
+                    className="flex size-10 items-center justify-center rounded-lg border border-white/10 bg-white/3 text-zinc-400 transition-all hover:border-primary/50 hover:text-primary disabled:cursor-not-allowed disabled:opacity-30"
+                  >
+                    <ChevronLeft className="size-4" />
+                  </button>
+                  <span className="min-w-8 text-center font-label text-[10px] tracking-widest text-on-surface-variant tabular-nums">
+                    {currentPage + 1}/{totalPages}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => slideCategory(category.id, 1, totalPages)}
+                    disabled={currentPage + 1 >= totalPages}
+                    aria-label="Next skills"
+                    className="flex size-10 items-center justify-center rounded-lg border border-white/10 bg-white/3 text-zinc-400 transition-all hover:border-primary/50 hover:text-primary disabled:cursor-not-allowed disabled:opacity-30"
+                  >
+                    <ChevronRight className="size-4" />
+                  </button>
+                </div>
+              )}
             </div>
 
-            {/* Track */}
-            <div className="overflow-hidden max-md:overflow-x-auto max-md:scrollbar-none">
+            <div className="overflow-hidden">
               <div
-                className="flex gap-6 transition-transform duration-500 ease-in-out"
-                style={
-                  !isMobile ? { transform: `translateX(-${currentPage * 100}%)` } : undefined
-                }
+                className="flex transition-transform duration-500 ease-in-out"
+                style={{ transform: `translateX(-${currentPage * 100}%)` }}
               >
                 {pages.map((page, pi) => (
-                  <div key={pi} className="flex gap-6 shrink-0 w-full">
+                  <div key={pi} className="flex w-full shrink-0 gap-4 sm:gap-6">
                     {page.map((skill) => (
-                      <div
-                        key={skill.id}
-                        className="shrink-0 w-[calc(100vw-48px)] md:w-[calc((100vw-96px)/3)] max-w-150 md:max-w-120 min-w-65 md:min-w-75"
-                      >
+                      <div key={skill.id} className="min-w-0 flex-1">
                         <SkillCard
                           skill={skill}
                           index={catIndex * 10 + categorySkills.indexOf(skill)}

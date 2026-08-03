@@ -3,14 +3,15 @@ import { supabase } from "../../shared/api/supabase"
 import { STALE_TIME, throwIfError } from "../../shared/api/supabase-utils"
 import type { Certificate, Skill } from "../../shared/types"
 
+export type CertificateRow = Omit<Certificate, "top_skills">
+export type NewCertificate = Omit<CertificateRow, "id">
+
 export const certificateKeys = {
   all: ["certificates"] as const,
   list: () => [...certificateKeys.all, "list"] as const,
 }
 
-function normalizeCertificate(
-  row: Omit<Certificate, "top_skills">,
-): Omit<Certificate, "top_skills"> {
+function normalizeCertificate(row: CertificateRow): CertificateRow {
   return {
     ...row,
     year: row.year ?? "",
@@ -18,14 +19,41 @@ function normalizeCertificate(
   }
 }
 
-export async function fetchCertificates(): Promise<
-  Omit<Certificate, "top_skills">[]
-> {
+export async function fetchCertificates(): Promise<CertificateRow[]> {
   const result = await supabase.from("certificates").select("*")
   const rows = await throwIfError(result, "certificates")
-  return ((rows ?? []) as Omit<Certificate, "top_skills">[]).map(
-    normalizeCertificate,
-  )
+  return ((rows ?? []) as CertificateRow[]).map(normalizeCertificate)
+}
+
+export async function createCertificate(
+  row: NewCertificate,
+): Promise<CertificateRow> {
+  const result = await supabase
+    .from("certificates")
+    .insert(row)
+    .select()
+    .single()
+  const data = await throwIfError(result, "certificates.create")
+  return normalizeCertificate(data as CertificateRow)
+}
+
+export async function updateCertificate(
+  id: string,
+  row: NewCertificate,
+): Promise<CertificateRow> {
+  const result = await supabase
+    .from("certificates")
+    .update(row)
+    .eq("id", id)
+    .select()
+    .single()
+  const data = await throwIfError(result, "certificates.update")
+  return normalizeCertificate(data as CertificateRow)
+}
+
+export async function deleteCertificate(id: string): Promise<void> {
+  const result = await supabase.from("certificates").delete().eq("id", id)
+  await throwIfError(result, "certificates.delete")
 }
 
 export function getTop3SkillsByCertificateId(
@@ -39,7 +67,7 @@ export function getTop3SkillsByCertificateId(
 }
 
 export function withCertificateTopSkills(
-  certificates: Omit<Certificate, "top_skills">[],
+  certificates: CertificateRow[],
   skills: Skill[],
 ): Certificate[] {
   return certificates.map((cert) => ({

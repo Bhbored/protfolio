@@ -1,4 +1,4 @@
-/** Matches `skills` */
+
 export interface Skill {
   id: string
   title: string
@@ -10,7 +10,6 @@ export interface Skill {
   details: string[]
 }
 
-/** Matches `skill_categories` */
 export interface SkillCategory {
   id: string
   category: string

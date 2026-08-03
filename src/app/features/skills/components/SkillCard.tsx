@@ -1,69 +1,68 @@
-import { useState } from "react";
-import { getIcon } from "../../../shared/data/icons";
-import type { Skill } from "../../../shared/types";
-import { ChevronDown } from "lucide-react";
+import { useState } from "react"
+import { getIcon } from "../../../shared/data/icons"
+import type { Skill } from "../../../shared/types"
+import { ChevronDown } from "lucide-react"
+import { animStagger } from "../../../../lib/anim-delay"
 
 interface SkillCardProps {
-  readonly skill: Skill;
-  readonly index: number;
+  readonly skill: Skill
+  readonly index: number
 }
 
 export default function SkillCard({ skill, index }: SkillCardProps) {
-  const [expanded, setExpanded] = useState(false);
-  const Icon = getIcon(skill.icon);
+  const [expanded, setExpanded] = useState(false)
+  const Icon = getIcon(skill.icon)
 
   return (
     <div
-      className="relative bg-linear-to-br from-surface-container-high via-surface-container to-surface-container-low border border-outline-variant/30 p-4 md:p-8 space-y-4 md:space-y-6 group hover:border-primary/50 transition-all duration-500 cursor-pointer hover:scale-[1.02] hover:shadow-glow-cyan animate-fade-in-up overflow-hidden"
-      style={{
-        animationDelay: `${index * 10}ms`,
-        animationFillMode: "both",
-        opacity: 0,
-      }}
+      className={`relative space-y-4 overflow-hidden border border-outline-variant/30 bg-linear-to-br from-surface-container-high via-surface-container to-surface-container-low p-4 transition-all duration-500 group hover:scale-[1.02] hover:border-primary/50 hover:shadow-glow-cyan animate-fade-in-up md:space-y-6 md:p-8 cursor-pointer ${animStagger(index, 50)}`}
       onClick={() => setExpanded(!expanded)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          setExpanded(!expanded)
+        }
+      }}
+      role="button"
+      tabIndex={0}
     >
-      {/* Gradient sweep on hover */}
-      <div className="absolute inset-0 bg-linear-to-r from-transparent via-primary/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
-      {/* Top glow line */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-primary/5 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/40 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-      <div className="flex justify-between items-start relative z-10">
-        <Icon className="text-primary text-2xl md:text-3xl group-hover:animate-pulse transition-all duration-300" />
+      <div className="relative z-10 flex items-start justify-between">
+        <Icon className="text-2xl text-primary transition-all duration-300 group-hover:animate-pulse md:text-3xl" />
         {skill.is_new && (
-          <div className="absolute top-3 right-3 md:top-4 md:right-4 bg-secondary-container px-2 py-0.5 text-[10px] font-black text-on-secondary tracking-widest">
+          <div className="absolute top-3 right-3 bg-secondary-container px-2 py-0.5 text-[10px] font-black tracking-widest text-on-secondary md:top-4 md:right-4">
             NEW
           </div>
         )}
       </div>
 
       <div className="relative z-10">
-        <h4 className="font-headline font-bold text-xl md:text-2xl mb-2 group-hover:text-gradient transition-all duration-500">
+        <h4 className="mb-2 font-headline text-xl font-bold transition-all duration-500 group-hover:text-gradient md:text-2xl">
           {skill.title}
         </h4>
 
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-[10px] font-label tracking-widest opacity-60">
+        <div className="mb-2 flex items-center justify-between">
+          <span className="font-label text-[10px] tracking-widest opacity-60">
             {skill.is_new ? (
               <span className="text-accent-orange">CURRENTLY EXPLORING</span>
             ) : (
               "MASTERY LEVEL"
             )}
           </span>
-          <span className="text-xs md:text-sm font-label text-on-surface">
+          <span className="font-label text-xs text-on-surface md:text-sm">
             {skill.mastery_level}%
           </span>
         </div>
 
-        <div className="h-1 bg-surface-container-highest w-full relative overflow-hidden">
+        <div className="relative h-1 w-full overflow-hidden bg-surface-container-highest">
           <div
-            className={`absolute h-full ${skill.is_new ? "bg-accent-orange" : "bg-accent-cyan"}`}
-            style={{
-              width: `${skill.mastery_level}%`,
-              boxShadow: `0 0 10px rgba(${skill.is_new ? "255,77,0" : "0,240,255"}, 0.5)`,
-            }}
+            className={`absolute h-full ${skill.is_new ? "bg-accent-orange shadow-glow-orange" : "bg-accent-cyan shadow-glow-cyan"}`}
+            style={{ width: `${skill.mastery_level}%` }}
           />
           {skill.is_new && (
-            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+            <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
           )}
         </div>
 

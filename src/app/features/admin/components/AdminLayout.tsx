@@ -23,7 +23,7 @@ export default function AdminLayout() {
 
   return (
     <div className="flex min-h-dvh bg-background text-on-surface">
-      {/* Desktop sidebar */}
+      
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-[260px] border-r border-white/10 bg-surface-container-high md:flex md:flex-col">
         <div className="border-b border-white/10 px-6 py-6">
           <Link
@@ -37,7 +37,7 @@ export default function AdminLayout() {
         <AdminNavMenu />
       </aside>
 
-      {/* Mobile drawer */}
+      
       {drawerOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           <button

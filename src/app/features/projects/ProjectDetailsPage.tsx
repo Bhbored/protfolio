@@ -1,47 +1,53 @@
-import { useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useLanding } from "../../providers/LandingProvider";
-import { getProjectCategoryName } from "../../../lib/project-category";
-import ScreenshotGallery from "./components/ScreenshotGallery";
-import TechnologiesList from "./components/TechnologiesList";
-import KeyFeaturesList from "./components/KeyFeaturesList";
-import ProjectInfoCard from "./components/ProjectInfoCard";
+import { useMemo } from "react"
+import { useParams, useNavigate } from "react-router-dom"
+import { useLanding } from "../../providers/LandingProvider"
+import { getProjectCategoryName } from "../../../lib/project-category"
+import { projectSlug, resolveMediaUrl } from "../../../lib/media-url"
+import ScreenshotGallery from "./components/ScreenshotGallery"
+import TechnologiesList from "./components/TechnologiesList"
+import KeyFeaturesList from "./components/KeyFeaturesList"
+import ProjectInfoCard from "./components/ProjectInfoCard"
 
 export default function ProjectDetailsPage() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const { projects } = useLanding();
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const { projects } = useLanding()
 
   const project = useMemo(() => {
-    if (!id) return undefined;
+    if (!id) return undefined
 
-    // Try numeric index first
-    const num = Number(id);
-    if (!isNaN(num) && num >= 0 && num < projects.length) {
-      return projects[num];
+    const byId = projects.find((p) => p.id === id)
+    if (byId) return byId
+
+    const bySlug = projects.find(
+      (p) => projectSlug(p.title) === id.toLowerCase(),
+    )
+    if (bySlug) return bySlug
+
+    const num = Number(id)
+    if (!Number.isNaN(num) && num >= 0 && num < projects.length) {
+      return projects[num]
     }
 
-    // Try slug match
-    return projects.find(
-      (p) => p.title.toLowerCase().replace(/\s+/g, "-") === id.toLowerCase(),
-    );
-  }, [id, projects]);
+    return undefined
+  }, [id, projects])
 
   if (!project) {
-    navigate("/", { replace: true });
-    return null;
+    navigate("/", { replace: true })
+    return null
   }
 
-  const isMobileApp = [6, 7, 8, 32].includes(project.project_category);
+  const isMobileApp = [6, 7, 8, 32].includes(project.project_category)
+  const imageSrc = resolveMediaUrl(project.image_url)
+  const screenshots = project.screenshots.map(resolveMediaUrl).filter(Boolean)
 
   return (
     <div className="relative w-full min-h-screen bg-background">
-      {/* Hero Image */}
-      {project.image_url && (
+      {imageSrc && (
         <div className="relative w-full h-[50vh] md:h-[60vh] lg:h-[70vh] overflow-hidden">
           <div className="absolute inset-0 bg-linear-to-t from-background via-background/50 to-transparent z-10" />
           <img
-            src={project.image_url}
+            src={imageSrc}
             alt={project.title}
             className="w-full h-full object-cover"
           />
@@ -49,7 +55,7 @@ export default function ProjectDetailsPage() {
           <button
             type="button"
             onClick={() => navigate("/")}
-            className="absolute top-6 left-6 md:top-8 md:left-12 z-20 inline-flex items-center gap-2 px-4 py-2 bg-surface-container-high/80 backdrop-blur-sm border border-white/10 rounded-full text-on-surface-variant hover:text-primary hover:border-primary/50 transition-all duration-300 group"
+            className="absolute top-4 left-4 z-20 inline-flex min-h-10 items-center gap-2 rounded-full border border-white/10 bg-surface-container-high/80 px-3 py-2 text-on-surface-variant backdrop-blur-sm transition-all duration-300 hover:border-primary/50 hover:text-primary group sm:top-6 sm:left-6 sm:px-4 md:top-8 md:left-12"
           >
             <svg
               className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300"
@@ -71,14 +77,14 @@ export default function ProjectDetailsPage() {
         </div>
       )}
 
-      {/* Header Section */}
-      <div className="relative z-20 -mt-24 md:-mt-32 px-6 md:px-12">
-        <div className="max-w-7xl mx-auto">
-          {project.image_url && (
+      
+      <div className="relative z-20 -mt-20 px-4 sm:-mt-24 sm:px-6 md:-mt-32 md:px-12">
+        <div className="mx-auto max-w-7xl">
+          {imageSrc && (
             <button
               type="button"
               onClick={() => navigate("/")}
-              className="hidden md:inline-flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors mb-6 group"
+              className="mb-4 hidden items-center gap-2 text-on-surface-variant transition-colors hover:text-primary group md:mb-6 md:inline-flex"
             >
               <svg
                 className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300"
@@ -100,15 +106,15 @@ export default function ProjectDetailsPage() {
           )}
 
           <div className="mb-8 md:mb-12">
-            <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-[0.9] tracking-tight mb-4 md:mb-6">
+            <h1 className="mb-3 font-headline text-3xl font-bold leading-[0.95] tracking-tight text-white sm:text-4xl md:mb-6 md:text-5xl lg:text-6xl xl:text-7xl">
               {project.title}
             </h1>
-            <p className="font-body text-lg md:text-xl lg:text-2xl text-on-surface-variant/80 leading-relaxed max-w-3xl">
+            <p className="max-w-3xl font-body text-base leading-relaxed text-on-surface-variant/80 sm:text-lg md:text-xl lg:text-2xl">
               {project.description}
             </p>
           </div>
 
-          {/* Quick Stats */}
+          
           <div className="flex flex-wrap gap-4 md:gap-6 pb-8 border-b border-white/10">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -231,23 +237,22 @@ export default function ProjectDetailsPage() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="relative z-20 px-6 md:px-12 py-12 md:py-16">
-        <div className="max-w-7xl mx-auto">
-          {/* Screenshots */}
-          {project.screenshots.length > 0 && (
-            <div className="mb-16 md:mb-24">
-              <h2 className="text-2xl md:text-[2.5rem] font-bold uppercase tracking-tight text-white mb-8">
+      
+      <div className="relative z-20 px-4 py-10 sm:px-6 sm:py-12 md:px-12 md:py-16">
+        <div className="mx-auto max-w-7xl">
+          {screenshots.length > 0 && (
+            <div className="mb-12 sm:mb-16 md:mb-24">
+              <h2 className="mb-6 text-xl font-bold uppercase tracking-tight text-white sm:mb-8 sm:text-2xl md:text-[2.5rem]">
                 Project Screenshots
               </h2>
               <ScreenshotGallery
-                screenshots={project.screenshots}
+                screenshots={screenshots}
                 isMobileApp={isMobileApp}
               />
             </div>
           )}
 
-          {/* Content Grid */}
+          
           <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8 items-stretch">
             <div className="flex flex-col gap-8">
               {project.technologies.length > 0 && (
