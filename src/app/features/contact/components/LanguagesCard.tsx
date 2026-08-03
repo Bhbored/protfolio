@@ -10,10 +10,10 @@ export default function LanguagesCard() {
         Languages
       </h3>
       <div className="space-y-4">
-        {info.Languages.map((lang) => (
-          <div key={lang.Name} className="flex justify-between items-start">
-            <p className="font-body text-sm text-on-surface-variant font-medium">{lang.Name}</p>
-            <p className="font-label text-xs text-primary uppercase tracking-wider">{getProficiencyText(lang.Proficiency)}</p>
+        {info.languages.map((lang) => (
+          <div key={lang.name} className="flex justify-between items-start">
+            <p className="font-body text-sm text-on-surface-variant font-medium">{lang.name}</p>
+            <p className="font-label text-xs text-primary uppercase tracking-wider">{getProficiencyText(lang.proficiency)}</p>
           </div>
         ))}
       </div>

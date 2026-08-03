@@ -1,10 +1,11 @@
 import type { Skill } from "./skill"
 
+/** Matches `certificates` (+ client-enriched `top_skills`) */
 export interface Certificate {
-  Id: string
-  Title: string
-  Issuer: string
-  Year: string
-  Link?: string
-  TopSKills: Skill[]
+  id: string
+  title: string
+  issuer: string
+  year: string
+  link: string | null
+  top_skills: Skill[]
 }

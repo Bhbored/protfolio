@@ -23,7 +23,7 @@ export default function ProjectDetailsPage() {
 
     // Try slug match
     return projects.find(
-      (p) => p.Title.toLowerCase().replace(/\s+/g, "-") === id.toLowerCase(),
+      (p) => p.title.toLowerCase().replace(/\s+/g, "-") === id.toLowerCase(),
     );
   }, [id, projects]);
 
@@ -32,17 +32,17 @@ export default function ProjectDetailsPage() {
     return null;
   }
 
-  const isMobileApp = [6, 7, 8, 32].includes(project.ProjectCategory);
+  const isMobileApp = [6, 7, 8, 32].includes(project.project_category);
 
   return (
     <div className="relative w-full min-h-screen bg-background">
       {/* Hero Image */}
-      {project.ImageUrl && (
+      {project.image_url && (
         <div className="relative w-full h-[50vh] md:h-[60vh] lg:h-[70vh] overflow-hidden">
           <div className="absolute inset-0 bg-linear-to-t from-background via-background/50 to-transparent z-10" />
           <img
-            src={project.ImageUrl}
-            alt={project.Title}
+            src={project.image_url}
+            alt={project.title}
             className="w-full h-full object-cover"
           />
 
@@ -74,7 +74,7 @@ export default function ProjectDetailsPage() {
       {/* Header Section */}
       <div className="relative z-20 -mt-24 md:-mt-32 px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
-          {project.ImageUrl && (
+          {project.image_url && (
             <button
               type="button"
               onClick={() => navigate("/")}
@@ -101,10 +101,10 @@ export default function ProjectDetailsPage() {
 
           <div className="mb-8 md:mb-12">
             <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-[0.9] tracking-tight mb-4 md:mb-6">
-              {project.Title}
+              {project.title}
             </h1>
             <p className="font-body text-lg md:text-xl lg:text-2xl text-on-surface-variant/80 leading-relaxed max-w-3xl">
-              {project.Description}
+              {project.description}
             </p>
           </div>
 
@@ -131,12 +131,12 @@ export default function ProjectDetailsPage() {
                   Category
                 </p>
                 <p className="font-body text-sm text-on-surface-variant">
-                  {getProjectCategoryName(project.ProjectCategory)}
+                  {getProjectCategoryName(project.project_category)}
                 </p>
               </div>
             </div>
 
-            {project.Technologies.length > 0 && (
+            {project.technologies.length > 0 && (
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                   <svg
@@ -158,13 +158,13 @@ export default function ProjectDetailsPage() {
                     Tech Stack
                   </p>
                   <p className="font-body text-sm text-on-surface-variant">
-                    {project.Technologies.length} Technologies
+                    {project.technologies.length} Technologies
                   </p>
                 </div>
               </div>
             )}
 
-            {project.GithubUrl && (
+            {project.github_url && (
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                   <svg
@@ -184,7 +184,7 @@ export default function ProjectDetailsPage() {
                     Repository
                   </p>
                   <a
-                    href={project.GithubUrl}
+                    href={project.github_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-body text-sm text-on-surface-variant hover:text-primary transition-colors hover:underline"
@@ -195,7 +195,7 @@ export default function ProjectDetailsPage() {
               </div>
             )}
 
-            {project.LiveUrl && (
+            {project.live_url && (
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                   <svg
@@ -217,7 +217,7 @@ export default function ProjectDetailsPage() {
                     Live Demo
                   </p>
                   <a
-                    href={project.LiveUrl}
+                    href={project.live_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-body text-sm text-on-surface-variant hover:text-primary transition-colors hover:underline"
@@ -235,13 +235,13 @@ export default function ProjectDetailsPage() {
       <div className="relative z-20 px-6 md:px-12 py-12 md:py-16">
         <div className="max-w-7xl mx-auto">
           {/* Screenshots */}
-          {project.Screenshots.length > 0 && (
+          {project.screenshots.length > 0 && (
             <div className="mb-16 md:mb-24">
               <h2 className="text-2xl md:text-[2.5rem] font-bold uppercase tracking-tight text-white mb-8">
                 Project Screenshots
               </h2>
               <ScreenshotGallery
-                screenshots={project.Screenshots}
+                screenshots={project.screenshots}
                 isMobileApp={isMobileApp}
               />
             </div>
@@ -250,18 +250,18 @@ export default function ProjectDetailsPage() {
           {/* Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8 items-stretch">
             <div className="flex flex-col gap-8">
-              {project.Technologies.length > 0 && (
-                <TechnologiesList technologies={project.Technologies} />
+              {project.technologies.length > 0 && (
+                <TechnologiesList technologies={project.technologies} />
               )}
-              {project.KeyFeatures.length > 0 && (
-                <KeyFeaturesList features={project.KeyFeatures} />
+              {project.key_features.length > 0 && (
+                <KeyFeaturesList features={project.key_features} />
               )}
             </div>
             <div>
               <ProjectInfoCard
-                category={project.ProjectCategory}
-                repositoryUrl={project.GithubUrl}
-                technologyCount={project.Technologies.length}
+                category={project.project_category}
+                repositoryUrl={project.github_url}
+                technologyCount={project.technologies.length}
               />
             </div>
           </div>

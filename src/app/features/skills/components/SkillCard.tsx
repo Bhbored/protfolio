@@ -10,7 +10,7 @@ interface SkillCardProps {
 
 export default function SkillCard({ skill, index }: SkillCardProps) {
   const [expanded, setExpanded] = useState(false);
-  const Icon = getIcon(skill.Icon);
+  const Icon = getIcon(skill.icon);
 
   return (
     <div
@@ -29,7 +29,7 @@ export default function SkillCard({ skill, index }: SkillCardProps) {
 
       <div className="flex justify-between items-start relative z-10">
         <Icon className="text-primary text-2xl md:text-3xl group-hover:animate-pulse transition-all duration-300" />
-        {skill.IsNew && (
+        {skill.is_new && (
           <div className="absolute top-3 right-3 md:top-4 md:right-4 bg-secondary-container px-2 py-0.5 text-[10px] font-black text-on-secondary tracking-widest">
             NEW
           </div>
@@ -38,39 +38,39 @@ export default function SkillCard({ skill, index }: SkillCardProps) {
 
       <div className="relative z-10">
         <h4 className="font-headline font-bold text-xl md:text-2xl mb-2 group-hover:text-gradient transition-all duration-500">
-          {skill.Title}
+          {skill.title}
         </h4>
 
         <div className="flex justify-between items-center mb-2">
           <span className="text-[10px] font-label tracking-widest opacity-60">
-            {skill.IsNew ? (
+            {skill.is_new ? (
               <span className="text-accent-orange">CURRENTLY EXPLORING</span>
             ) : (
               "MASTERY LEVEL"
             )}
           </span>
           <span className="text-xs md:text-sm font-label text-on-surface">
-            {skill.MasteryLevel}%
+            {skill.mastery_level}%
           </span>
         </div>
 
         <div className="h-1 bg-surface-container-highest w-full relative overflow-hidden">
           <div
-            className={`absolute h-full ${skill.IsNew ? "bg-accent-orange" : "bg-accent-cyan"}`}
+            className={`absolute h-full ${skill.is_new ? "bg-accent-orange" : "bg-accent-cyan"}`}
             style={{
-              width: `${skill.MasteryLevel}%`,
-              boxShadow: `0 0 10px rgba(${skill.IsNew ? "255,77,0" : "0,240,255"}, 0.5)`,
+              width: `${skill.mastery_level}%`,
+              boxShadow: `0 0 10px rgba(${skill.is_new ? "255,77,0" : "0,240,255"}, 0.5)`,
             }}
           />
-          {skill.IsNew && (
+          {skill.is_new && (
             <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
           )}
         </div>
 
-        {expanded && skill.Details.length > 0 && (
+        {expanded && skill.details.length > 0 && (
           <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-outline-variant/20">
             <ul className="space-y-2 md:space-y-3">
-              {skill.Details.map((detail: string, i: number) => (
+              {skill.details.map((detail: string, i: number) => (
                 <li
                   key={i}
                   className="flex items-start gap-2 md:gap-3 text-xs md:text-sm text-on-surface-variant"

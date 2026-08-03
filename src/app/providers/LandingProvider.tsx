@@ -1,18 +1,13 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from "react"
 import {
   createContext,
   useContext,
   useState,
   useCallback,
   useMemo,
-} from "react";
-import { personalInfo } from "../../data/mockData";
-import skillsData from "../shared/data/Skills.json";
-import categoriesData from "../shared/data/SkillCategories.json";
-import projectsData from "../shared/data/Projects.json";
-import certificatesData from "../shared/data/Certificates.json";
-import experiencesData from "../shared/data/Experiences.json";
-import educationsData from "../shared/data/Educations.json";
+  useEffect,
+} from "react"
+import { useQuery } from "@tanstack/react-query"
 import type {
   PersonalInfo,
   Skill,
@@ -21,195 +16,106 @@ import type {
   Certificate,
   Experience,
   Education,
-} from "../shared/types";
-
-interface ExperienceJson {
-  title: string;
-  company: string;
-  period: string;
-  description: string[];
-}
-
-interface EducationJson {
-  id: string;
-  title: string;
-  issuer: string;
-  year: string;
-}
-
-function toExperience(j: ExperienceJson): Experience {
-  return {
-    Title: j.title,
-    Company: j.company,
-    Period: j.period,
-    Description: j.description,
-  };
-}
-
-function toEducation(j: EducationJson): Education {
-  return { Id: j.id, Title: j.title, Issuer: j.issuer, Year: j.year };
-}
-
-interface SkillJson {
-  id: string;
-  title: string;
-  icon: number;
-  skillCategoryID: string | null;
-  certificateID: string | null;
-  masteryLevel: number;
-  isNew: boolean;
-  details: string[];
-}
-
-interface CategoryJson {
-  id: string;
-  category: string;
-}
-
-interface ProjectJson {
-  title: string;
-  description: string;
-  imageUrl: string;
-  projectCategory: number;
-  technologies: string[];
-  githubUrl: string;
-  liveUrl: string;
-  keyFeatures: string[];
-  screenshots: string[];
-}
-
-function toSkill(j: SkillJson): Skill {
-  return {
-    Id: j.id,
-    Title: j.title,
-    Icon: j.icon,
-    SkillCategoryID: j.skillCategoryID,
-    CertificateID: j.certificateID,
-    MasteryLevel: j.masteryLevel,
-    IsNew: j.isNew,
-    Details: j.details,
-  };
-}
-
-function toCategory(j: CategoryJson): SkillCategory {
-  return { Id: j.id, Category: j.category };
-}
-
-interface CertificateJson {
-  id: string;
-  title: string;
-  issuer: string;
-  year: string;
-  link?: string;
-  topSKills: SkillJson[];
-}
-
-function toCertificate(
-  j: CertificateJson,
-  getTopSkills: (id: string) => Skill[],
-): Certificate {
-  return {
-    Id: j.id,
-    Title: j.title,
-    Issuer: j.issuer,
-    Year: j.year,
-    Link: j.link,
-    TopSKills: getTopSkills(j.id),
-  };
-}
-
-function toProject(j: ProjectJson): Project {
-  return {
-    Title: j.title,
-    Description: j.description,
-    ImageUrl: j.imageUrl,
-    ProjectCategory: j.projectCategory as never,
-    Technologies: j.technologies,
-    GithubUrl: j.githubUrl,
-    LiveUrl: j.liveUrl,
-    KeyFeatures: j.keyFeatures,
-    Screenshots: j.screenshots,
-  };
-}
+} from "../shared/types"
+import {
+  EMPTY_PERSONAL_INFO,
+  personalInfoQueries,
+} from "../features/landing/personal-info.service"
+import {
+  getSkillsByCategoryId as filterSkillsByCategory,
+  skillQueries,
+} from "../features/skills/skills.service"
+import { projectQueries } from "../features/projects/projects.service"
+import {
+  getTop3SkillsByCertificateId as filterTopSkills,
+  withCertificateTopSkills,
+  certificateQueries,
+} from "../features/certificates/certificates.service"
+import { experienceQueries } from "../features/experience/experiences.service"
+import { educationQueries } from "../features/education/educations.service"
 
 interface LandingState {
-  personalInfo: PersonalInfo;
-  currentSection: string;
-  navigateToSection: (section: string) => void;
-  skills: Skill[];
-  categories: SkillCategory[];
-  getSkillsByCategoryId: (id: string) => Skill[];
-  getTop3SkillsByCertificateId: (id: string) => Skill[];
-  projects: Project[];
-  certificates: Certificate[];
-  experiences: Experience[];
-  educations: Education[];
+  personalInfo: PersonalInfo
+  currentSection: string
+  navigateToSection: (section: string) => void
+  skills: Skill[]
+  categories: SkillCategory[]
+  getSkillsByCategoryId: (id: string) => Skill[]
+  getTop3SkillsByCertificateId: (id: string) => Skill[]
+  projects: Project[]
+  certificates: Certificate[]
+  experiences: Experience[]
+  educations: Education[]
 }
 
-const LandingContext = createContext<LandingState | null>(null);
+const LandingContext = createContext<LandingState | null>(null)
 
 export function LandingProvider({
   children,
 }: {
-  readonly children: ReactNode;
+  readonly children: ReactNode
 }) {
-  const [currentSection, setCurrentSection] = useState("Home");
+  const [currentSection, setCurrentSection] = useState("Home")
+
+  const personalInfoQuery = useQuery(personalInfoQueries.detail())
+  const skillsQuery = useQuery(skillQueries.list())
+  const categoriesQuery = useQuery(skillQueries.categories())
+  const projectsQuery = useQuery(projectQueries.list())
+  const certificatesQuery = useQuery(certificateQueries.list())
+  const experiencesQuery = useQuery(experienceQueries.list())
+  const educationsQuery = useQuery(educationQueries.list())
+
+  useEffect(() => {
+    const errors = [
+      personalInfoQuery.error,
+      skillsQuery.error,
+      categoriesQuery.error,
+      projectsQuery.error,
+      certificatesQuery.error,
+      experiencesQuery.error,
+      educationsQuery.error,
+    ].filter(Boolean)
+
+    for (const error of errors) {
+      console.error("[LandingProvider]", error)
+    }
+  }, [
+    personalInfoQuery.error,
+    skillsQuery.error,
+    categoriesQuery.error,
+    projectsQuery.error,
+    certificatesQuery.error,
+    experiencesQuery.error,
+    educationsQuery.error,
+  ])
 
   const navigateToSection = useCallback((section: string) => {
-    setCurrentSection(section);
-    const el = document.getElementById(section.toLowerCase());
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  }, []);
+    setCurrentSection(section)
+    const el = document.getElementById(section.toLowerCase())
+    if (el) el.scrollIntoView({ behavior: "smooth" })
+  }, [])
 
-  const skills = useMemo(() => (skillsData as SkillJson[]).map(toSkill), []);
-  const categories = useMemo(
-    () => (categoriesData as CategoryJson[]).map(toCategory),
-    [],
-  );
-  const projects = useMemo(
-    () => (projectsData as ProjectJson[]).map(toProject),
-    [],
-  );
-  const experiences = useMemo(
-    () => (experiencesData as ExperienceJson[]).map(toExperience),
-    [],
-  );
-  const educations = useMemo(
-    () => (educationsData as EducationJson[]).map(toEducation),
-    [],
-  );
-
-  const getSkillsByCategoryId = useCallback(
-    (categoryId: string) =>
-      skills.filter((s) => s.SkillCategoryID === categoryId),
-    [skills],
-  );
-
-  const getTop3SkillsByCertificateIdFn = useCallback(
-    (certId: string) =>
-      skills
-        .filter((s) => s.CertificateID === certId)
-        .sort((a, b) => b.MasteryLevel - a.MasteryLevel)
-        .slice(0, 3),
-    [skills],
-  );
+  const personalInfo = personalInfoQuery.data ?? EMPTY_PERSONAL_INFO
+  const skills = skillsQuery.data ?? []
+  const categories = categoriesQuery.data ?? []
+  const projects = projectsQuery.data ?? []
+  const experiences = experiencesQuery.data ?? []
+  const educations = educationsQuery.data ?? []
 
   const certificates = useMemo(
-    () =>
-      (certificatesData as CertificateJson[]).map((j) =>
-        toCertificate(j, getTop3SkillsByCertificateIdFn),
-      ),
-    [getTop3SkillsByCertificateIdFn],
-  );
+    () => withCertificateTopSkills(certificatesQuery.data ?? [], skills),
+    [certificatesQuery.data, skills],
+  )
+
+  const getSkillsByCategoryId = useCallback(
+    (categoryId: string) => filterSkillsByCategory(skills, categoryId),
+    [skills],
+  )
 
   const getTop3SkillsByCertificateId = useCallback(
-    (certificateId: string) =>
-      skills
-        .filter((s) => s.CertificateID === certificateId)
-        .sort((a, b) => b.MasteryLevel - a.MasteryLevel)
-        .slice(0, 3),
+    (certificateId: string) => filterTopSkills(skills, certificateId),
     [skills],
-  );
+  )
 
   return (
     <LandingContext.Provider
@@ -229,11 +135,11 @@ export function LandingProvider({
     >
       {children}
     </LandingContext.Provider>
-  );
+  )
 }
 
 export function useLanding(): LandingState {
-  const ctx = useContext(LandingContext);
-  if (!ctx) throw new Error("useLanding must be used within LandingProvider");
-  return ctx;
+  const ctx = useContext(LandingContext)
+  if (!ctx) throw new Error("useLanding must be used within LandingProvider")
+  return ctx
 }

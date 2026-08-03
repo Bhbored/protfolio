@@ -18,7 +18,7 @@ export default function EducationCard({ education, index }: EducationCardProps) 
 
       <div className="inline-flex items-center gap-2 mb-4 relative z-10">
         <span className="font-label text-[10px] tracking-widest text-primary bg-primary/10 border border-primary/20 px-3 py-1">
-          {education.Year}
+          {education.year}
         </span>
         <div className="flex-1 h-[1px] bg-linear-to-r from-primary/20 to-transparent" />
       </div>
@@ -27,10 +27,10 @@ export default function EducationCard({ education, index }: EducationCardProps) 
         <div className="flex items-start gap-3">
           <GraduationCap className="text-primary/80 text-xl mt-0.5 group-hover:animate-pulse shrink-0" />
           <h3 className="font-headline text-lg md:text-xl font-bold uppercase tracking-tight text-white leading-tight group-hover:text-gradient">
-            {education.Title}
+            {education.title}
           </h3>
         </div>
-        <p className="font-body text-xs md:text-sm text-slate-400 pl-9">{education.Issuer}</p>
+        <p className="font-body text-xs md:text-sm text-slate-400 pl-9">{education.issuer}</p>
       </div>
 
       <div className="absolute bottom-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500">

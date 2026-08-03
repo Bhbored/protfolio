@@ -29,16 +29,16 @@ export default function ExperienceTimelineCard({ experience, isLeft, index, isAc
               <div className="flex justify-between items-start mb-6 relative z-10">
                 <div>
                   <h3 className="font-headline text-xl md:text-2xl font-bold text-white mb-1 group-hover:text-gradient transition-all duration-500">
-                    {experience.Company}
+                    {experience.company}
                   </h3>
                   <p className="text-primary font-label tracking-wide text-xs md:text-sm font-semibold">
-                    {experience.Title.toUpperCase()}
+                    {experience.title.toUpperCase()}
                   </p>
                 </div>
                 <Briefcase className="text-primary/30 group-hover:text-primary/80 group-hover:animate-pulse transition-all duration-300 text-3xl" />
               </div>
               <ul className="space-y-3 md:space-y-4 text-slate-400 text-xs md:text-sm leading-relaxed relative z-10">
-                {experience.Description.map((item, i) => (
+                {experience.description.map((item, i) => (
                   <li key={i} className="flex gap-3">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
                     <span>{item}</span>
@@ -58,7 +58,7 @@ export default function ExperienceTimelineCard({ experience, isLeft, index, isAc
           <div className="hidden md:flex justify-start pl-24 order-3">
             <div className="rotate-90 origin-left flex items-center gap-4">
               <span className="font-headline font-bold text-xl lg:text-2xl text-primary/40 tracking-tighter whitespace-nowrap">
-                {experience.Period}
+                {experience.period}
               </span>
               <div className="w-12 h-0.5 bg-primary/20" />
             </div>
@@ -70,7 +70,7 @@ export default function ExperienceTimelineCard({ experience, isLeft, index, isAc
             <div className="-rotate-90 origin-right flex items-center gap-4">
               <div className="w-12 h-0.5 bg-primary/20" />
               <span className="font-headline font-bold text-xl lg:text-2xl text-primary/40 tracking-tighter whitespace-nowrap uppercase">
-                {experience.Period}
+                {experience.period}
               </span>
             </div>
           </div>
@@ -87,16 +87,16 @@ export default function ExperienceTimelineCard({ experience, isLeft, index, isAc
               <div className="flex justify-between items-start mb-6 relative z-10">
                 <div>
                   <h3 className="font-headline text-xl md:text-2xl font-bold text-white mb-1 group-hover:text-gradient transition-all duration-500">
-                    {experience.Company}
+                    {experience.company}
                   </h3>
                   <p className="text-primary font-label tracking-wide text-xs md:text-sm font-semibold">
-                    {experience.Title.toUpperCase()}
+                    {experience.title.toUpperCase()}
                   </p>
                 </div>
                 <Briefcase className="text-primary/30 group-hover:text-primary/80 group-hover:animate-pulse transition-all duration-300 text-3xl" />
               </div>
               <ul className="space-y-3 md:space-y-4 text-slate-400 text-xs md:text-sm leading-relaxed relative z-10">
-                {experience.Description.map((item, i) => (
+                {experience.description.map((item, i) => (
                   <li key={i} className="flex gap-3">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
                     <span>{item}</span>

@@ -39,8 +39,8 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
         {/* Image */}
         <div className="absolute inset-0 scale-[0.95] transition-transform duration-700 group-hover:scale-100">
           <img
-            src={project.ImageUrl}
-            alt={project.Title}
+            src={project.image_url}
+            alt={project.title}
             className="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-700"
           />
           <div className="absolute inset-0 bg-linear-to-t from-background via-transparent to-transparent" />
@@ -58,7 +58,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
         {/* Title label */}
         <div className="absolute top-4 left-4 md:top-6 md:left-6 z-20">
           <div className="text-[10px] font-label text-primary tracking-widest uppercase">
-            Target: {project.Title}
+            Target: {project.title}
           </div>
         </div>
 
@@ -73,15 +73,15 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
       {/* Project Info */}
       <div>
         <h4 className="font-headline font-bold text-sm md:text-base lg:text-lg xl:text-xl mb-2 text-white group-hover:text-gradient transition-all duration-500">
-          {project.Title}
+          {project.title}
         </h4>
         <p className="text-xs sm:text-sm md:text-base text-on-surface-variant/80 font-body mb-4">
-          {project.Description}
+          {project.description}
         </p>
 
         {/* Tech badges */}
         <div className="flex flex-wrap gap-2">
-          {project.Technologies.slice(0, 3).map((tech) => (
+          {project.technologies.slice(0, 3).map((tech) => (
             <span
               key={tech}
               className="text-[10px] font-label tracking-widest uppercase text-primary bg-primary/10 border border-primary/20 px-2 py-1"
@@ -89,18 +89,18 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
               {tech}
             </span>
           ))}
-          {project.Technologies.length > 3 && (
+          {project.technologies.length > 3 && (
             <span className="text-[10px] font-label tracking-widest uppercase text-on-surface-variant bg-surface-container/10 border border-outline-variant/20 px-2 py-1">
-              +{project.Technologies.length - 3}
+              +{project.technologies.length - 3}
             </span>
           )}
         </div>
 
         {/* Action links */}
         <div className="flex gap-4 mt-4">
-          {project.GithubUrl && (
+          {project.github_url && (
             <a
-              href={project.GithubUrl}
+              href={project.github_url}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-xs font-label tracking-widest uppercase text-on-surface-variant hover:text-primary transition-colors"
@@ -109,9 +109,9 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
               Code
             </a>
           )}
-          {project.LiveUrl && (
+          {project.live_url && (
             <a
-              href={project.LiveUrl}
+              href={project.live_url}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-xs font-label tracking-widest uppercase text-on-surface-variant hover:text-primary transition-colors"

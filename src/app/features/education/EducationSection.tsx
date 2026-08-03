@@ -50,7 +50,7 @@ export default function EducationSection() {
       <div className="max-w-384 mx-auto relative">
         <div className="flex flex-col md:flex-row gap-12 md:gap-24 justify-center">
           {educations.map((edu, i) => (
-            <div key={edu.Id} className="w-full md:w-[calc(50%-48px)] max-w-[600px] min-w-[280px] md:min-w-[400px]">
+            <div key={edu.id} className="w-full md:w-[calc(50%-48px)] max-w-[600px] min-w-[280px] md:min-w-[400px]">
               <EducationCard education={edu} index={i} />
             </div>
           ))}

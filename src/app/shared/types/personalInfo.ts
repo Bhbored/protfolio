@@ -1,25 +1,27 @@
 import type { ProficiencyLevel } from "./enums"
 
 export interface SocialLinks {
-  Github: string
-  Linkedin: string
+  github: string
+  linkedin: string
 }
 
 export interface Language {
-  Name: string
-  Proficiency: ProficiencyLevel
+  name: string
+  proficiency: ProficiencyLevel
 }
 
+/** Matches `personal_info` — nullable DB columns coerced to defaults in the data layer */
 export interface PersonalInfo {
-  Name: string
-  Title: string
-  Email: string
-  Phone: string
-  Location: string
-  Summary: string
-  HeadLine: string
-  ProfileImage: string
-  IsAvailableForWork: boolean
-  Social: SocialLinks
-  Languages: Language[]
+  id?: string
+  name: string
+  title: string
+  email: string
+  phone: string
+  location: string
+  summary: string
+  headline: string
+  profile_image: string
+  is_available_for_work: boolean
+  social: SocialLinks
+  languages: Language[]
 }

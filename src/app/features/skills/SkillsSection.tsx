@@ -11,7 +11,7 @@ export default function SkillsSection() {
   const { categories, getSkillsByCategoryId } = useLanding()
   const isMobile = useIsMobile()
   const [pageIndices, setPageIndices] = useState<Record<string, number>>(() =>
-    Object.fromEntries(categories.map((c) => [c.Id, 0]))
+    Object.fromEntries(categories.map((c) => [c.id, 0]))
   )
 
   const slideCategory = (categoryId: string, direction: number) => {
@@ -62,8 +62,8 @@ export default function SkillsSection() {
 
       {/* Categories */}
       {categories.map((category, catIndex) => {
-        const categorySkills = getSkillsByCategoryId(category.Id)
-        const currentPage = pageIndices[category.Id] ?? 0
+        const categorySkills = getSkillsByCategoryId(category.id)
+        const currentPage = pageIndices[category.id] ?? 0
         const totalPages = Math.max(1, Math.ceil(categorySkills.length / pageSize))
 
         // Build pages
@@ -74,7 +74,7 @@ export default function SkillsSection() {
 
         return (
           <div
-            key={category.Id}
+            key={category.id}
             className="mb-16 md:mb-24 animate-fade-in-up"
             style={{
               animationDelay: `${800 + catIndex * 150}ms`,
@@ -89,12 +89,12 @@ export default function SkillsSection() {
                   0{catIndex + 1}
                 </span>
                 <h3 className="font-headline font-bold tracking-tight text-lg md:text-xl uppercase">
-                  {category.Category}
+                  {category.category}
                 </h3>
               </div>
               <div className="hidden md:flex items-center gap-3">
                 <button
-                  onClick={() => slideCategory(category.Id, -1)}
+                  onClick={() => slideCategory(category.id, -1)}
                   disabled={currentPage === 0}
                   className="flex items-center justify-center w-9 h-9 border border-white/10 rounded-lg bg-white/3 text-zinc-400 cursor-pointer backdrop-blur-sm transition-all duration-200 hover:border-primary/50 hover:text-primary hover:bg-primary/5 hover:shadow-[0_0_12px_rgba(0,240,255,0.15)] hover:-translate-y-0.5 active:scale-96 disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none"
                 >
@@ -104,7 +104,7 @@ export default function SkillsSection() {
                   {currentPage + 1}/{totalPages}
                 </span>
                 <button
-                  onClick={() => slideCategory(category.Id, 1)}
+                  onClick={() => slideCategory(category.id, 1)}
                   disabled={currentPage + 1 >= totalPages}
                   className="flex items-center justify-center w-9 h-9 border border-white/10 rounded-lg bg-white/3 text-zinc-400 cursor-pointer backdrop-blur-sm transition-all duration-200 hover:border-primary/50 hover:text-primary hover:bg-primary/5 hover:shadow-[0_0_12px_rgba(0,240,255,0.15)] hover:-translate-y-0.5 active:scale-96 disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none"
                 >
@@ -125,7 +125,7 @@ export default function SkillsSection() {
                   <div key={pi} className="flex gap-6 shrink-0 w-full">
                     {page.map((skill) => (
                       <div
-                        key={skill.Id}
+                        key={skill.id}
                         className="shrink-0 w-[calc(100vw-48px)] md:w-[calc((100vw-96px)/3)] max-w-150 md:max-w-120 min-w-65 md:min-w-75"
                       >
                         <SkillCard

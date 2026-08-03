@@ -14,7 +14,7 @@ export default function NavMenu() {
     if (!isMobile) setMobileOpen(false)
   }, [isMobile])
 
-  const initials = getInitials(personalInfo.Name)
+  const initials = getInitials(personalInfo.name)
 
   return (
     <>

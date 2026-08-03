@@ -1,6 +1,8 @@
+/** Matches `experiences` — nullable DB columns coerced to defaults in the data layer */
 export interface Experience {
-  Title: string
-  Company: string
-  Period: string
-  Description: string[]
+  id?: string
+  title: string
+  company: string
+  period: string
+  description: string[]
 }

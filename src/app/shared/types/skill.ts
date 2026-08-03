@@ -1,15 +1,17 @@
+/** Matches `skills` */
 export interface Skill {
-  Id: string
-  Title: string
-  Icon: number
-  SkillCategoryID: string | null
-  CertificateID: string | null
-  MasteryLevel: number
-  IsNew: boolean
-  Details: string[]
+  id: string
+  title: string
+  icon: number
+  skill_category_id: string | null
+  certificate_id: string | null
+  mastery_level: number
+  is_new: boolean
+  details: string[]
 }
 
+/** Matches `skill_categories` */
 export interface SkillCategory {
-  Id: string
-  Category: string
+  id: string
+  category: string
 }

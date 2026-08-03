@@ -6,7 +6,7 @@ import ScrollIndicator from "./components/ScrollIndicator"
 
 export default function HeroSection() {
   const { personalInfo: info } = useLanding()
-  const name = capitalizeName(info.Name)
+  const name = capitalizeName(info.name)
 
   return (
     <section id="home" className="relative h-screen w-full flex items-center px-6 md:px-12 mesh-gradient overflow-hidden">
@@ -28,19 +28,19 @@ export default function HeroSection() {
                   className="font-headline text-[72px] md:text-[96px] lg:text-[120px] font-bold text-gradient leading-[0.85] tracking-tight mt-4 animate-fade-in-left select-none"
                   style={{ animationDelay: "500ms", animationFillMode: "forwards", opacity: 0 }}
                 >
-                  {info.Title}
+                  {info.title}
                 </h1>
               </div>
             </div>
 
             <div className="mt-16 md:mt-24 flex items-center gap-8 md:gap-12">
-              {info.IsAvailableForWork && <AvailabilityBadge />}
+              {info.is_available_for_work && <AvailabilityBadge />}
               <div
                 className="max-w-xs animate-fade-in-up"
                 style={{ animationDelay: "700ms", animationFillMode: "both", opacity: 0 }}
               >
                 <p className="font-body text-white/80 text-sm leading-relaxed">
-                  {info.Summary}
+                  {info.summary}
                 </p>
               </div>
             </div>
@@ -50,7 +50,7 @@ export default function HeroSection() {
             className="hidden md:block w-full md:w-2/5 h-[70vh] relative animate-fade-in-right"
             style={{ animationDelay: "600ms", animationFillMode: "both", opacity: 0 }}
           >
-            <PortraitSection portraitUrl={info.ProfileImage} />
+            <PortraitSection portraitUrl={info.profile_image} />
           </div>
         </div>
 
@@ -82,19 +82,19 @@ export default function HeroSection() {
                   className="font-headline text-[64px] font-bold text-gradient leading-[0.9] tracking-tight mt-2 animate-fade-in-up select-none"
                   style={{ animationDelay: "500ms", animationFillMode: "forwards", opacity: 0 }}
                 >
-                  {info.Title}
+                  {info.title}
                 </h1>
               </div>
             </div>
 
             <div className="mt-8 flex flex-col items-center gap-6">
-              {info.IsAvailableForWork && <AvailabilityBadge />}
+              {info.is_available_for_work && <AvailabilityBadge />}
               <div
                 className="max-w-sm animate-fade-in-up"
                 style={{ animationDelay: "700ms", animationFillMode: "both", opacity: 0 }}
               >
                 <p className="font-body text-white/40 text-sm leading-relaxed">
-                  {info.Summary}
+                  {info.summary}
                 </p>
               </div>
             </div>
@@ -104,7 +104,7 @@ export default function HeroSection() {
             className="w-full h-[40vh] mt-8 relative animate-scale-in"
             style={{ animationDelay: "600ms", animationFillMode: "both", opacity: 0 }}
           >
-            <PortraitSection portraitUrl={info.ProfileImage} />
+            <PortraitSection portraitUrl={info.profile_image} />
           </div>
         </div>
       </div>

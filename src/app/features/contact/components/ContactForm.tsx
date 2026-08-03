@@ -52,7 +52,7 @@ export default function ContactForm() {
 
     const subject = form.subject
     const body = `Hello, my name is ${form.name} and I would like to get in touch with you.\n${form.message}`
-    const mailto = `mailto:${info.Email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    const mailto = `mailto:${info.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
 
     setTimeout(() => {
       window.location.href = mailto

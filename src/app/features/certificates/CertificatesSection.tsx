@@ -103,7 +103,7 @@ export default function CertificatesSection() {
                   const realIndex = certificates.indexOf(cert);
                   return (
                     <div
-                      key={cert.Id}
+                      key={cert.id}
                       className="shrink-0 w-[calc(50vw-48px)] md:w-[calc(25vw-48px)] min-w-60 md:min-w-70 md:max-w-90"
                     >
                       <CertificateCard certificate={cert} index={realIndex} />

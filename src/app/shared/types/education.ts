@@ -1,6 +1,7 @@
+/** Matches `educations` */
 export interface Education {
-  Id: string
-  Title: string
-  Issuer: string
-  Year: string
+  id: string
+  title: string
+  issuer: string
+  year: string
 }

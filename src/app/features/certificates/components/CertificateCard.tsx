@@ -28,30 +28,30 @@ export default function CertificateCard({ certificate, index }: CertificateCardP
 
       <div className="space-y-1 mb-6 relative z-10">
         <h3 className="font-headline text-lg md:text-xl font-bold uppercase tracking-tight text-white mb-1 group-hover:text-gradient transition-all duration-500">
-          {certificate.Title}
+          {certificate.title}
         </h3>
         <p className="font-body text-xs md:text-sm text-slate-400">
-          {certificate.Issuer} &bull; {certificate.Year}
+          {certificate.issuer} &bull; {certificate.year}
         </p>
       </div>
 
       {/* Top 3 Skills */}
-      {certificate.TopSKills.length > 0 && (
+      {certificate.top_skills.length > 0 && (
         <div className="space-y-3 mt-auto relative z-10">
-          {certificate.TopSKills.map((skill) => (
-            <div key={skill.Id}>
+          {certificate.top_skills.map((skill) => (
+            <div key={skill.id}>
               <div className="flex justify-between items-center mb-1">
                 <span className="text-[12px] font-label tracking-widest text-slate-500 uppercase group-hover:text-slate-400 transition-colors duration-500">
-                  {skill.Title}
+                  {skill.title}
                 </span>
                 <span className="text-[12px] font-label text-slate-400 group-hover:text-primary/80 transition-colors duration-500">
-                  {skill.MasteryLevel}%
+                  {skill.mastery_level}%
                 </span>
               </div>
               <div className="h-0.5 bg-surface-container-highest w-full relative overflow-hidden">
                 <div
                   className="absolute h-full bg-primary"
-                  style={{ width: `${skill.MasteryLevel}%`, boxShadow: `0 0 8px rgba(0, 240, 255, ${shadowOpacity})` }}
+                  style={{ width: `${skill.mastery_level}%`, boxShadow: `0 0 8px rgba(0, 240, 255, ${shadowOpacity})` }}
                 />
               </div>
             </div>
@@ -67,10 +67,10 @@ export default function CertificateCard({ certificate, index }: CertificateCardP
       </div>
 
       {/* Credential Link */}
-      {certificate.Link && (
+      {certificate.link && (
         <div className="mt-4 pt-3 border-t border-white/5 relative z-10">
           <a
-            href={certificate.Link}
+            href={certificate.link}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 text-[10px] font-label text-primary/60 hover:text-primary transition-colors tracking-widest uppercase"
