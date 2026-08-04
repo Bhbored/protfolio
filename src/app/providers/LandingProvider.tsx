@@ -89,6 +89,40 @@ export function LandingProvider({
     educationsQuery.error,
   ])
 
+  useEffect(() => {
+    const ids = [
+      "home",
+      "skills",
+      "projects",
+      "experience",
+      "certificates",
+      "education",
+      "contact",
+    ]
+    const elements = ids
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null)
+
+    if (elements.length === 0) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
+        const top = visible[0]
+        if (!top?.target.id) return
+        const label =
+          top.target.id.charAt(0).toUpperCase() + top.target.id.slice(1)
+        setCurrentSection(label)
+      },
+      { rootMargin: "-35% 0px -45% 0px", threshold: [0.1, 0.25, 0.5] },
+    )
+
+    for (const el of elements) observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   const navigateToSection = useCallback((section: string) => {
     setCurrentSection(section)
     const el = document.getElementById(section.toLowerCase())
