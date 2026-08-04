@@ -7,6 +7,7 @@ import ScreenshotGallery from "./components/ScreenshotGallery"
 import TechnologiesList from "./components/TechnologiesList"
 import KeyFeaturesList from "./components/KeyFeaturesList"
 import ProjectInfoCard from "./components/ProjectInfoCard"
+import ProjectSideNav from "./components/ProjectSideNav"
 import MediaImage from "../../shared/components/MediaImage"
 
 export default function ProjectDetailsPage() {
@@ -48,6 +49,12 @@ export default function ProjectDetailsPage() {
 
   return (
     <div className="relative w-full min-h-screen bg-background">
+      <ProjectSideNav
+        projects={projects}
+        currentId={project.id}
+        currentTitle={project.title}
+      />
+
       {imageSrc && (
         <div className="relative w-full h-[50vh] md:h-[60vh] lg:h-[70vh] overflow-hidden">
           <div className="absolute inset-0 bg-linear-to-t from-background via-background/50 to-transparent z-10" />

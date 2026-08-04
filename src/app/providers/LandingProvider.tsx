@@ -89,6 +89,42 @@ export function LandingProvider({
     educationsQuery.error,
   ])
 
+  useEffect(() => {
+    const sectionLabels: Record<string, string> = {
+      home: "Home",
+      skills: "Skills",
+      projects: "Projects",
+      experience: "Experience",
+      certificates: "Certificates",
+      education: "Education",
+      contact: "Contact",
+    }
+    const ids = Object.keys(sectionLabels)
+
+    const updateActiveSection = () => {
+      const marker = window.innerHeight * 0.35
+      let activeId = ids[0]
+
+      for (const id of ids) {
+        const el = document.getElementById(id)
+        if (!el) continue
+        if (el.getBoundingClientRect().top <= marker) {
+          activeId = id
+        }
+      }
+
+      setCurrentSection(sectionLabels[activeId] ?? "Home")
+    }
+
+    updateActiveSection()
+    window.addEventListener("scroll", updateActiveSection, { passive: true })
+    window.addEventListener("resize", updateActiveSection)
+    return () => {
+      window.removeEventListener("scroll", updateActiveSection)
+      window.removeEventListener("resize", updateActiveSection)
+    }
+  }, [])
+
   const navigateToSection = useCallback((section: string) => {
     setCurrentSection(section)
     const el = document.getElementById(section.toLowerCase())
