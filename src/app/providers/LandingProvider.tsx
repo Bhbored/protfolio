@@ -90,37 +90,39 @@ export function LandingProvider({
   ])
 
   useEffect(() => {
-    const ids = [
-      "home",
-      "skills",
-      "projects",
-      "experience",
-      "certificates",
-      "education",
-      "contact",
-    ]
-    const elements = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => el !== null)
+    const sectionLabels: Record<string, string> = {
+      home: "Home",
+      skills: "Skills",
+      projects: "Projects",
+      experience: "Experience",
+      certificates: "Certificates",
+      education: "Education",
+      contact: "Contact",
+    }
+    const ids = Object.keys(sectionLabels)
 
-    if (elements.length === 0) return
+    const updateActiveSection = () => {
+      const marker = window.innerHeight * 0.35
+      let activeId = ids[0]
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
-        const top = visible[0]
-        if (!top?.target.id) return
-        const label =
-          top.target.id.charAt(0).toUpperCase() + top.target.id.slice(1)
-        setCurrentSection(label)
-      },
-      { rootMargin: "-35% 0px -45% 0px", threshold: [0.1, 0.25, 0.5] },
-    )
+      for (const id of ids) {
+        const el = document.getElementById(id)
+        if (!el) continue
+        if (el.getBoundingClientRect().top <= marker) {
+          activeId = id
+        }
+      }
 
-    for (const el of elements) observer.observe(el)
-    return () => observer.disconnect()
+      setCurrentSection(sectionLabels[activeId] ?? "Home")
+    }
+
+    updateActiveSection()
+    window.addEventListener("scroll", updateActiveSection, { passive: true })
+    window.addEventListener("resize", updateActiveSection)
+    return () => {
+      window.removeEventListener("scroll", updateActiveSection)
+      window.removeEventListener("resize", updateActiveSection)
+    }
   }, [])
 
   const navigateToSection = useCallback((section: string) => {
