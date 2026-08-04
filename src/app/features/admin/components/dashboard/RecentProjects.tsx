@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 import { ArrowUpRight, ImageIcon } from "lucide-react"
 import type { Project } from "../../../../shared/types"
 import { getProjectCategoryName } from "../../../../../lib/project-category"
-import { resolveMediaUrl } from "../../../../../lib/media-url"
+import MediaImage from "../../../../shared/components/MediaImage"
 import DashPanel, { PanelHeader } from "./DashPanel"
 
 interface RecentProjectsProps {
@@ -64,15 +64,14 @@ export default function RecentProjects({ projects, loading }: RecentProjectsProp
             to="/admin/projects"
             className="group relative block aspect-[16/11] overflow-hidden rounded-2xl border border-white/[0.06] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:aspect-[21/9]"
           >
-            {resolveMediaUrl(featured.image_url) ? (
-              <img
-                src={resolveMediaUrl(featured.image_url)}
-                alt=""
-                className="absolute inset-0 size-full object-cover transition-transform duration-500 motion-safe:group-hover:scale-105"
-              />
-            ) : (
-              <div className="absolute inset-0 bg-surface-container-highest" />
-            )}
+            <MediaImage
+              src={featured.image_url}
+              alt=""
+              frame="none"
+              className="absolute inset-0 size-full"
+              imageClassName="transition-transform duration-500 motion-safe:group-hover:scale-105"
+              fallback={<div className="absolute inset-0 bg-surface-container-highest" />}
+            />
             <div className="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
               <p className="font-label text-[10px] uppercase tracking-[0.16em] text-primary">
@@ -99,7 +98,6 @@ export default function RecentProjects({ projects, loading }: RecentProjectsProp
           {secondary.length > 0 && (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               {secondary.map((project) => {
-                const thumb = resolveMediaUrl(project.image_url)
                 return (
                   <Link
                     key={project.id ?? project.title}
@@ -107,15 +105,14 @@ export default function RecentProjects({ projects, loading }: RecentProjectsProp
                     className="group flex min-h-[72px] gap-3 rounded-2xl border border-white/[0.06] bg-black/20 p-2.5 transition-colors hover:border-primary/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:flex-col sm:gap-2 sm:p-0 sm:overflow-hidden"
                   >
                     <div className="size-16 shrink-0 overflow-hidden rounded-xl bg-surface-container-highest sm:aspect-[16/10] sm:size-auto sm:rounded-none sm:rounded-t-2xl">
-                      {thumb ? (
-                        <img
-                          src={thumb}
-                          alt=""
-                          className="size-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="size-full bg-white/5" />
-                      )}
+                      <MediaImage
+                        src={project.image_url}
+                        alt=""
+                        frame="none"
+                        className="size-full"
+                        imageClassName="transition-transform duration-300 motion-safe:group-hover:scale-105"
+                        fallback={<div className="absolute inset-0 size-full bg-white/5" />}
+                      />
                     </div>
                     <div className="min-w-0 flex-1 self-center sm:self-auto sm:p-3 sm:pt-2">
                       <p className="truncate font-body text-sm font-medium text-on-surface group-hover:text-primary">

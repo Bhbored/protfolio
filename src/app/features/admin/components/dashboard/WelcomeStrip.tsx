@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 import { ArrowUpRight, ExternalLink, UserRound } from "lucide-react"
 import type { PersonalInfo } from "../../../../shared/types"
 import { resolveMediaUrl } from "../../../../../lib/media-url"
+import MediaImage from "../../../../shared/components/MediaImage"
 
 interface WelcomeStripProps {
   readonly personalInfo: PersonalInfo | undefined
@@ -70,7 +71,18 @@ export default function WelcomeStrip({
         <div className="flex items-start gap-4">
           <div className="relative size-16 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-primary/10 shadow-[0_0_40px_rgba(0,240,255,0.12)] sm:size-20">
             {avatar ? (
-              <img src={avatar} alt="" className="size-full object-cover" />
+              <MediaImage
+                src={avatar}
+                alt=""
+                frame="none"
+                resolveUrl={false}
+                className="size-full bg-transparent"
+                fallback={
+                  <div className="absolute inset-0 flex size-full items-center justify-center text-primary">
+                    <UserRound className="size-8 sm:size-9" aria-hidden />
+                  </div>
+                }
+              />
             ) : (
               <div className="flex size-full items-center justify-center text-primary">
                 <UserRound className="size-8 sm:size-9" aria-hidden />

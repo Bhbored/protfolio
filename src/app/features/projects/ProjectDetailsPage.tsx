@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { useLanding } from "../../providers/LandingProvider"
 import { getProjectCategoryName } from "../../../lib/project-category"
@@ -7,11 +7,16 @@ import ScreenshotGallery from "./components/ScreenshotGallery"
 import TechnologiesList from "./components/TechnologiesList"
 import KeyFeaturesList from "./components/KeyFeaturesList"
 import ProjectInfoCard from "./components/ProjectInfoCard"
+import MediaImage from "../../shared/components/MediaImage"
 
 export default function ProjectDetailsPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { projects } = useLanding()
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" })
+  }, [id])
 
   const project = useMemo(() => {
     if (!id) return undefined
@@ -46,10 +51,12 @@ export default function ProjectDetailsPage() {
       {imageSrc && (
         <div className="relative w-full h-[50vh] md:h-[60vh] lg:h-[70vh] overflow-hidden">
           <div className="absolute inset-0 bg-linear-to-t from-background via-background/50 to-transparent z-10" />
-          <img
-            src={imageSrc}
+          <MediaImage
+            src={project.image_url}
             alt={project.title}
-            className="w-full h-full object-cover"
+            frame="none"
+            loading="eager"
+            className="absolute inset-0 size-full"
           />
 
           <button

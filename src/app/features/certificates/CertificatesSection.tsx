@@ -68,11 +68,14 @@ export default function CertificatesSection() {
             style={{ transform: `translateX(-${page * 100}%)` }}
           >
             {pages.map((pageCerts, pi) => (
-              <div key={pi} className="flex w-full shrink-0 gap-4 sm:gap-6 md:gap-8">
+              <div
+                key={pi}
+                className="grid w-full shrink-0 grid-cols-1 gap-4 sm:gap-6 md:grid-cols-4 md:gap-8"
+              >
                 {pageCerts.map((cert) => {
                   const realIndex = certificates.indexOf(cert)
                   return (
-                    <div key={cert.id} className="min-w-0 flex-1">
+                    <div key={cert.id} className="min-w-0">
                       <CertificateCard certificate={cert} index={realIndex} />
                     </div>
                   )

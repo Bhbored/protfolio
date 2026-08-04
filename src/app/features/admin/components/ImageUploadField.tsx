@@ -2,6 +2,7 @@ import { useRef, useState } from "react"
 import { ImagePlus, Loader2, Trash2, Upload } from "lucide-react"
 import { useUploadImage, useUploadImages } from "../../../../hooks/use-upload"
 import { useToast } from "../../../shared/components/Toast"
+import MediaImage from "../../../shared/components/MediaImage"
 
 interface ImageUploadFieldProps {
   readonly label: string
@@ -70,10 +71,11 @@ export function ImageUploadField({
       >
         <div className="flex items-center gap-4">
           {value ? (
-            <img
+            <MediaImage
               src={value}
               alt=""
-              className={`size-20 object-cover border border-white/10 ${
+              frame="none"
+              className={`size-20 border border-white/10 ${
                 round ? "rounded-full" : "rounded-lg"
               }`}
             />
@@ -199,7 +201,12 @@ export function MultiImageUploadField({
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
           {values.map((url, index) => (
             <div key={`${url}-${index}`} className="group relative aspect-video overflow-hidden rounded-lg border border-white/10">
-              <img src={url} alt="" className="size-full object-cover" />
+              <MediaImage
+                src={url}
+                alt=""
+                frame="none"
+                className="size-full"
+              />
               <button
                 type="button"
                 aria-label="Remove image"

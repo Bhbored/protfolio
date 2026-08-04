@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom"
 import type { Project } from "../../../shared/types"
 import { Code, ExternalLink } from "lucide-react"
-import { projectSlug, resolveMediaUrl } from "../../../../lib/media-url"
+import { projectSlug } from "../../../../lib/media-url"
 import { animStagger } from "../../../../lib/anim-delay"
+import MediaImage from "../../../shared/components/MediaImage"
 
 interface ProjectCardProps {
   readonly project: Project
@@ -12,7 +13,6 @@ interface ProjectCardProps {
 export default function ProjectCard({ project, index }: ProjectCardProps) {
   const navigate = useNavigate()
   const href = project.id ?? projectSlug(project.title)
-  const imageSrc = resolveMediaUrl(project.image_url)
 
   return (
     <div
@@ -40,13 +40,14 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
         <div className="absolute top-0 left-0 right-0 h-spx bg-linear-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20" />
 
         <div className="absolute inset-0 scale-[0.95] transition-transform duration-700 group-hover:scale-100">
-          {imageSrc ? (
-            <img
-              src={imageSrc}
-              alt={project.title}
-              className="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-700"
-            />
-          ) : null}
+          <MediaImage
+            src={project.image_url}
+            alt={project.title}
+            frame="none"
+            className="absolute inset-0 size-full bg-transparent"
+            imageClassName="grayscale opacity-40 transition-all duration-700 group-hover:grayscale-0 group-hover:opacity-60"
+            fallback={<div className="absolute inset-0 bg-surface-container-highest" />}
+          />
           <div className="absolute inset-0 bg-linear-to-t from-background via-transparent to-transparent" />
         </div>
 

@@ -31,7 +31,7 @@ export default function ProjectsSection() {
   return (
     <section
       id="projects"
-      className="relative min-h-dvh overflow-hidden pb-16 pt-14 mesh-gradient sm:pb-20 sm:pt-16 md:pb-24 md:pt-24"
+      className="relative overflow-hidden pb-16 pt-14 mesh-gradient sm:pb-20 sm:pt-16 md:pb-24 md:pt-24"
     >
       <div className="mx-auto max-w-384 px-4 sm:px-6">
         <header className="relative mb-10 sm:mb-14 md:mb-24">
@@ -61,33 +61,31 @@ export default function ProjectsSection() {
         </header>
       </div>
 
-      <div className="overflow-hidden">
-        <div
-          className="flex transition-transform duration-500 ease-in-out"
-          style={{ transform: `translateX(-${page * 100}%)` }}
-        >
-          {pages.map((pageProjects, pi) => (
-            <div
-              key={pi}
-              className="mx-auto flex w-full max-w-384 shrink-0 gap-4 px-4 sm:gap-6 sm:px-6"
-            >
-              {pageProjects.map((project) => {
-                const realIndex = projects.indexOf(project)
-                return (
-                  <div
-                    key={project.id ?? realIndex}
-                    className="min-w-0 flex-1"
-                  >
-                    <ProjectCard project={project} index={realIndex} />
-                  </div>
-                )
-              })}
-            </div>
-          ))}
-        </div>
+      <div className="relative overflow-hidden">
+        {pages.map((pageProjects, pi) => (
+          <div
+            key={pi}
+            aria-hidden={pi !== page}
+            className={`mx-auto grid w-full max-w-384 grid-cols-1 gap-4 px-4 transition-transform duration-500 ease-in-out sm:gap-6 sm:px-6 md:grid-cols-3 ${
+              pi === page
+                ? "relative"
+                : "pointer-events-none absolute inset-x-0 top-0"
+            }`}
+            style={{ transform: `translateX(${(pi - page) * 100}%)` }}
+          >
+            {pageProjects.map((project) => {
+              const realIndex = projects.indexOf(project)
+              return (
+                <div key={project.id ?? realIndex} className="min-w-0">
+                  <ProjectCard project={project} index={realIndex} />
+                </div>
+              )
+            })}
+          </div>
+        ))}
       </div>
 
-      <div className="mx-auto mt-8 flex max-w-384 items-center justify-between gap-3 px-4 sm:mt-12 sm:px-6">
+      <div className="mx-auto mt-6 flex max-w-384 items-center justify-between gap-3 px-4 sm:mt-8 sm:px-6">
         <button
           type="button"
           onClick={() => setPage((p) => Math.max(p - 1, 0))}

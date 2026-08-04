@@ -26,7 +26,7 @@ export default function SkillsSection() {
   return (
     <section
       id="skills"
-      className="mx-auto min-h-dvh max-w-384 overflow-x-hidden px-4 pb-20 pt-14 mesh-gradient sm:px-6 sm:pb-24 sm:pt-16 md:pb-32 md:pt-20"
+      className="mx-auto max-w-384 overflow-x-hidden px-4 pb-16 pt-14 mesh-gradient sm:px-6 sm:pb-20 sm:pt-16 md:pb-24 md:pt-20"
     >
       <header className="relative mb-10 sm:mb-14 md:mb-24">
         <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end md:gap-6">
@@ -66,7 +66,7 @@ export default function SkillsSection() {
         if (pages.length === 0) pages.push([])
 
         return (
-          <div key={category.id} className="mb-12 sm:mb-16 md:mb-24">
+          <div key={category.id} className="mb-12 last:mb-0 sm:mb-16 md:mb-24">
             <div className="mb-5 flex items-center justify-between gap-3 sm:mb-6 md:mb-8">
               <div className="flex min-w-0 items-center gap-3">
                 <span className="shrink-0 bg-surface-container-high px-2 py-1 font-label text-xs text-primary">
@@ -109,9 +109,12 @@ export default function SkillsSection() {
                 style={{ transform: `translateX(-${currentPage * 100}%)` }}
               >
                 {pages.map((page, pi) => (
-                  <div key={pi} className="flex w-full shrink-0 gap-4 sm:gap-6">
+                  <div
+                    key={pi}
+                    className="grid w-full shrink-0 grid-cols-1 gap-4 sm:gap-6 md:grid-cols-3"
+                  >
                     {page.map((skill) => (
-                      <div key={skill.id} className="min-w-0 flex-1">
+                      <div key={skill.id} className="min-w-0">
                         <SkillCard
                           skill={skill}
                           index={catIndex * 10 + categorySkills.indexOf(skill)}

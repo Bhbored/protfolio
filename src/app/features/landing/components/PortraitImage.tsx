@@ -1,24 +1,23 @@
 import { useLanding } from "../../../providers/LandingProvider"
-import { resolveMediaUrl } from "../../../../lib/media-url"
+import MediaImage from "../../../shared/components/MediaImage"
 
 export default function PortraitImage() {
   const { personalInfo } = useLanding()
-  const src = resolveMediaUrl(personalInfo.profile_image)
-
-  if (!src) {
-    return (
-      <div
-        className="flex size-full items-center justify-center bg-surface-container-high text-on-surface-variant"
-        aria-label="No profile image"
-      />
-    )
-  }
 
   return (
-    <img
+    <MediaImage
+      src={personalInfo.profile_image}
       alt={`${personalInfo.name || "Developer"} portrait`}
-      src={src}
-      className="w-full h-full object-cover object-[center_20%] md:object-[center_25%] portrait-mask brightness-100 group-hover:brightness-105 transition-all duration-700 group-hover:scale-105"
+      frame="none"
+      loading="eager"
+      className="size-full bg-surface-container-high"
+      imageClassName="object-[center_20%] md:object-[center_25%] portrait-mask brightness-100 group-hover:brightness-105 transition-all duration-700 group-hover:scale-105"
+      fallback={
+        <div
+          className="absolute inset-0 flex size-full items-center justify-center bg-surface-container-high text-on-surface-variant"
+          aria-label="No profile image"
+        />
+      }
     />
   )
 }
