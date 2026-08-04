@@ -62,7 +62,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 grid-pattern opacity-[0.05]" aria-hidden />
 
       <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-384 flex-col justify-end px-4 pb-16 pt-28 sm:px-6 sm:pb-20 md:justify-center md:px-12 md:pb-24 md:pt-24">
-        <div data-hero-copy className="max-w-2xl space-y-6 md:space-y-8">
+        <div data-hero-copy className="max-w-2xl space-y-6 md:-translate-y-10 md:space-y-8 lg:-translate-y-14">
           {info.is_available_for_work ? <AvailabilityBadge /> : null}
 
           <div>

@@ -71,17 +71,21 @@ export function ImageUploadField({
       >
         <div className="flex items-center gap-4">
           {value ? (
-            <MediaImage
-              src={value}
-              alt=""
-              frame="none"
-              className={`size-20 border border-white/10 ${
+            <div
+              className={`size-16 shrink-0 overflow-hidden border border-white/10 sm:size-20 ${
                 round ? "rounded-full" : "rounded-lg"
               }`}
-            />
+            >
+              <MediaImage
+                src={value}
+                alt=""
+                frame="none"
+                className="size-full"
+              />
+            </div>
           ) : (
             <div
-              className={`flex size-20 items-center justify-center border border-white/10 bg-surface-container-high text-on-surface-variant ${
+              className={`flex size-16 shrink-0 items-center justify-center border border-white/10 bg-surface-container-high text-on-surface-variant sm:size-20 ${
                 round ? "rounded-full" : "rounded-lg"
               }`}
             >
